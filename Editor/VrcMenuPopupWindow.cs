@@ -1,24 +1,26 @@
 ﻿using System;
-using UnityEngine;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
+using UnityEngine;
+using VRC.SDK3.Avatars.ScriptableObjects;
 
 namespace Puetsua.VRCButtonWizard.Editor
 {
-    internal class AssetPathPopupWindow : PopupWindowContent
+    public class VrcMenuPopupWindow : PopupWindowContent
     {
-        public static string lastSelectedPath;
+        public static VRCExpressionsMenu lastSelectedMenu;
 
         private readonly float _windowWidth;
-        private readonly Action<string> _onPathSelected;
 
         private bool _assetFoldout;
-        private AssetPathTreeView _treeView;
+        private VrcMenuTreeView _treeView;
         private TreeViewState _treeViewState;
         private SearchField _searchField;
+        private VRCExpressionsMenu _rootMenu;
 
-        public AssetPathPopupWindow(float windowWidth)
+        public VrcMenuPopupWindow(float windowWidth, VRCExpressionsMenu rootMenu)
         {
+            _rootMenu = rootMenu;
             _windowWidth = windowWidth;
         }
 
@@ -27,14 +29,14 @@ namespace Puetsua.VRCButtonWizard.Editor
             if (_treeViewState == null)
                 _treeViewState = new TreeViewState();
 
-            _treeView = new AssetPathTreeView(_treeViewState, OnItemDoubleClicked);
+            _treeView = new VrcMenuTreeView(_treeViewState, _rootMenu, OnItemDoubleClicked);
             _searchField = new SearchField();
             _searchField.downOrUpArrowKeyPressed += _treeView.SetFocusAndEnsureSelectedItem;
         }
 
-        private void OnItemDoubleClicked(string path)
+        private void OnItemDoubleClicked(VRCExpressionsMenu menu)
         {
-            lastSelectedPath = path;
+            lastSelectedMenu = menu;
             editorWindow.Close();
         }
 

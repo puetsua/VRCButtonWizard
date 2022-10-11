@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
@@ -25,7 +26,8 @@ namespace Puetsua.VRCButtonWizard.Editor
         protected bool isParamSaved;
         protected bool defaultBool;
 
-        protected bool targetObjectSettingReady;
+        protected VRCExpressionsMenu VrcRootMenu => avatar == null ? null : avatar.expressionsMenu;
+        protected string AssetPath => string.IsNullOrEmpty(folderPath) ? "Assets" : $"Assets/{folderPath}";
 
         protected void LoadFolderPath()
         {
@@ -83,29 +85,14 @@ namespace Puetsua.VRCButtonWizard.Editor
             return avatar.baseAnimationLayers[4].animatorController as AnimatorController;
         }
 
-        protected void ShowAvatarOptions()
+        protected void ShowCreateToggleButton()
         {
-            targetAnimatorController = EditorGUILayout.ObjectField("Animator", targetAnimatorController,
-                typeof(AnimatorController), true) as AnimatorController;
-            targetObject = EditorGUILayout.ObjectField("Toggle Object", targetObject,
-                typeof(GameObject), true) as GameObject;
-            menuName = EditorGUILayout.TextField("Menu Name", menuName);
-            parameterName = EditorGUILayout.TextField("Parameter Name", parameterName);
-            isParamSaved = EditorGUILayout.Toggle("Save Parameter", isParamSaved);
-            defaultBool = EditorGUILayout.Toggle("Default Value", defaultBool);
-
             if (targetObject != null)
             {
                 if (!targetObject.transform.IsChildOf(avatar.transform))
                 {
                     EditorGUILayout.HelpBox("Target Object is not under avatar.", MessageType.Error);
                     return;
-                }
-
-                if (!targetObjectSettingReady)
-                {
-                    SetupTargetObjectSetting(targetObject);
-                    targetObjectSettingReady = true;
                 }
             }
 
@@ -123,74 +110,114 @@ namespace Puetsua.VRCButtonWizard.Editor
 
         protected void ShowAnimatorField()
         {
-            
+            targetAnimatorController = EditorGUILayout.ObjectField("Animator", targetAnimatorController,
+                typeof(AnimatorController), true) as AnimatorController;
         }
-        
-        protected void ShowTargetObjectField()
+
+        protected void ShowVrcTargetMenuField()
         {
-            
+            vrcTargetMenu = EditorGUILayout.ObjectField("Target Menu", vrcTargetMenu,
+                typeof(VRCExpressionsMenu), false) as VRCExpressionsMenu;
         }
-        
-        protected void ShowMenuNameField()
-                {
-                    
-                }
-        
-        protected void ShowParameterNameField()
+
+        protected void ShowVrcParameterField()
         {
-                    
+            vrcParameters = EditorGUILayout.ObjectField("Parameters", vrcParameters,
+                typeof(VRCExpressionParameters), false) as VRCExpressionParameters;
         }
-        
-        protected void ShowParameterSaveField()
+
+        protected void ShowTargetObjectField(Action onChange = null)
         {
-                    
+            EditorGUI.BeginChangeCheck();
+            targetObject = EditorGUILayout.ObjectField("Toggle Object", targetObject,
+                typeof(GameObject), true) as GameObject;
+            if (EditorGUI.EndChangeCheck() && targetAnimatorController != null)
+            {
+                SetupTargetObjectSetting(targetObject);
+                onChange?.Invoke();
+            }
         }
-        
-        protected void ShowParameterDefaultField()
-        {
-                    
-        }
-        
-        private void SetupTargetObjectSetting(GameObject targetObject)
+
+        private void SetupTargetObjectSetting(GameObject target)
         {
             if (string.IsNullOrWhiteSpace(menuName))
             {
-                menuName = targetObject.name;
+                menuName = target.name;
             }
 
             if (string.IsNullOrWhiteSpace(parameterName))
             {
-                parameterName = targetObject.name;
+                parameterName = target.name;
             }
         }
 
-        private void CreateToggle(string menuToggleName, string parameterName)
+        protected void ShowMenuNameField()
         {
+            menuName = EditorGUILayout.TextField("Menu Name", menuName);
+        }
+
+        protected void ShowParameterNameField()
+        {
+            parameterName = EditorGUILayout.TextField("Parameter Name", parameterName);
+        }
+
+        protected void ShowParameterSaveField()
+        {
+            isParamSaved = EditorGUILayout.Toggle("Save Parameter", isParamSaved);
+        }
+
+        protected void ShowParameterDefaultField()
+        {
+            defaultBool = EditorGUILayout.Toggle("Default Value", defaultBool);
+        }
+
+        private void CreateToggle(string toggleMenuName, string toggleParameterName)
+        {
+            CreateFolderIfNotExist(AssetPath);
+
             string path = targetObject.transform.GetHierarchyPath(avatar.transform);
-            AnimationClip clipOn = AnimationClipUtil.ToggleCreate(folderPath, path, parameterName, true);
-            AnimationClip clipOff = AnimationClipUtil.ToggleCreate(folderPath, path, parameterName, false);
+            AnimationClip clipOn = AnimationClipUtil.ToggleCreate(AssetPath, path, toggleParameterName, true);
+            AnimationClip clipOff = AnimationClipUtil.ToggleCreate(AssetPath, path, toggleParameterName, false);
             var toggleLayer = new AnimatorControllerLayer
             {
-                name = menuToggleName,
+                name = toggleMenuName,
                 stateMachine = AnimatorStateMachineUtil.ToggleCreate(clipOn, clipOff,
-                    parameterName, parameterName),
+                    toggleParameterName, toggleParameterName),
                 blendingMode = AnimatorLayerBlendingMode.Override,
                 defaultWeight = 1,
             };
-
+            
             targetAnimatorController.AddLayer(toggleLayer);
             targetAnimatorController.TryAddParameter(new AnimatorControllerParameter
             {
-                name = parameterName,
+                name = toggleParameterName,
                 type = AnimatorControllerParameterType.Bool,
                 defaultBool = false
             });
         }
 
-        private void CreateVrcToggle(string menuName, string parameterName, bool isSaved, bool defaultBool)
+        private void CreateVrcToggle(string toggleMenuName, string toggleParameterName, bool isSaved, bool defaultValue)
         {
-            vrcParameters.AddToggle(parameterName, isSaved, defaultBool);
-            vrcTargetMenu.AddToggle(menuName, parameterName);
+            vrcParameters.AddToggle(toggleParameterName, isSaved, defaultValue);
+            vrcTargetMenu.AddToggle(toggleMenuName, toggleParameterName);
+        }
+
+        protected static void CreateFolderIfNotExist(string path)
+        {
+            if (AssetDatabase.IsValidFolder(path)) 
+                return;
+
+            var parentFolderPath = Path.GetDirectoryName(path);
+            if (parentFolderPath == "Asset")
+                return;
+            
+            if (!string.IsNullOrEmpty(parentFolderPath))
+            {
+                CreateFolderIfNotExist(parentFolderPath);
+            }
+            
+            var folderName = Path.GetFileName(path);
+            AssetDatabase.CreateFolder(parentFolderPath, folderName);
         }
     }
 }

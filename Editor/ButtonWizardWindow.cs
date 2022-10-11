@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System.IO;
+using UnityEditor;
 using UnityEngine;
 using VRC.SDK3.Avatars.Components;
 
@@ -19,11 +20,34 @@ namespace Puetsua.VRCButtonWizard.Editor
         private void OnGUI()
         {
             GUILayout.Label("VRChat Button Wizard", EditorStyles.boldLabel);
-            ShowAvatarField();
+            ShowAvatarField(OnAvatarChanged);
             if (avatar != null)
             {
-                ShowAvatarOptions();
+                ShowTargetObjectField();
+                ShowMenuNameField();
+                ShowParameterSaveField();
+                ShowParameterDefaultField();
+                ShowCreateToggleButton();
             }
+        }
+
+        private void OnAvatarChanged()
+        {
+            SetFolderPath();
+        }
+
+        private void SetFolderPath()
+        {
+            var path = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(avatar);
+            if (string.IsNullOrEmpty(path))
+            {
+                path = avatar.gameObject.scene.path;
+            }
+
+            path = Path.GetDirectoryName(path) ?? "";
+            path = Path.Combine(path, "Animations");
+
+            Debug.Log($"{path} {avatar.gameObject.scene.path}");
         }
     }
 }

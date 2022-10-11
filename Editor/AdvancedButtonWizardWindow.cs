@@ -24,11 +24,35 @@ namespace Puetsua.VRCButtonWizard.Editor
         {
             GUILayout.Label("Advanced VRChat Button Wizard", EditorStyles.boldLabel);
 
-            ShowSaveLocation(SaveFolderPath);
+            ShowSaveLocation(OnSaveLocationChanged);
             ShowAvatarField();
             if (avatar != null)
             {
-                ShowAvatarOptions();
+                ShowAnimatorField();
+                ShowTargetObjectField();
+                ShowVrcTargetMenuField();
+                ShowMenuNameField();
+                ShowVrcParameterField();
+                ShowParameterNameField();
+                ShowParameterSaveField();
+                ShowParameterDefaultField();
+                ShowCreateToggleButton();
+            }
+
+            // TestZ();
+        }
+
+        private void OnSaveLocationChanged()
+        {
+            SaveFolderPath();
+        }
+
+        private void TestZ()
+        {
+            var test = PtEditorGUILayout.VrcMenuPopup("Toggle Object", VrcRootMenu, vrcTargetMenu);
+            if (test != vrcTargetMenu)
+            {
+                Debug.Log($"{test.name} {vrcTargetMenu.name}");
             }
         }
     }
