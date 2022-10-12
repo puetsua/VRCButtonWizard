@@ -45,7 +45,6 @@ namespace Puetsua.VRCButtonWizard.Editor
         protected override void DoubleClickedItem(int id)
         {
             var path = _paths[id];
-            path = path.Substring("Assets/".Length);
             _onItemDoubleClicked(path);
         }
 

@@ -3,6 +3,7 @@ using System.IO;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using VRC.SDK3.Avatars.Components;
 using VRC.SDK3.Avatars.ScriptableObjects;
 
@@ -27,18 +28,17 @@ namespace Puetsua.VRCButtonWizard.Editor
         protected bool defaultBool;
 
         protected VRCExpressionsMenu VrcRootMenu => avatar == null ? null : avatar.expressionsMenu;
-        protected string AssetPath => string.IsNullOrEmpty(folderPath) ? "Assets" : $"Assets/{folderPath}";
 
         protected void LoadFolderPath()
         {
             folderPath = EditorPrefs.GetString(EditorPrefConst.SavePath);
-            if (debug) Debug.Log("Save Path loaded.");
+            if (debug) Debug.Log($"Save Path loaded: {folderPath}");
         }
 
         protected void SaveFolderPath()
         {
             EditorPrefs.SetString(EditorPrefConst.SavePath, folderPath);
-            if (debug) Debug.Log("Save Path saved.");
+            if (debug) Debug.Log($"Save Path saved: {folderPath}");
         }
 
         protected void ShowAvatarField(Action onChange = null)
@@ -75,9 +75,6 @@ namespace Puetsua.VRCButtonWizard.Editor
 
             vrcParameters = avatarDesc.expressionParameters;
             vrcTargetMenu = avatarDesc.expressionsMenu;
-
-            // TODO: when _vrcParameters null
-            // TODO: when _vrcTargetMenu null
         }
 
         private static AnimatorController GetAnimatorController(VRCAvatarDescriptor avatar)
@@ -103,6 +100,7 @@ namespace Puetsua.VRCButtonWizard.Editor
             {
                 CreateVrcToggle(menuName, parameterName, isParamSaved, defaultBool);
                 CreateToggle(menuName, parameterName);
+                AssetDatabase.SaveAssets();
             }
 
             GUI.enabled = true;
@@ -173,49 +171,87 @@ namespace Puetsua.VRCButtonWizard.Editor
 
         private void CreateToggle(string toggleMenuName, string toggleParameterName)
         {
-            CreateFolderIfNotExist(AssetPath);
+            if (targetAnimatorController == null)
+            {
+                Debug.LogAssertion(new NotImplementedException());
+                return;
+            }
+
+            CreateFolderIfNotExist(folderPath);
 
             string path = targetObject.transform.GetHierarchyPath(avatar.transform);
-            AnimationClip clipOn = AnimationClipUtil.ToggleCreate(AssetPath, path, toggleParameterName, true);
-            AnimationClip clipOff = AnimationClipUtil.ToggleCreate(AssetPath, path, toggleParameterName, false);
-            var toggleLayer = new AnimatorControllerLayer
+            var assetPath = AssetDatabase.GetAssetPath(targetAnimatorController);
+            AnimationClip clipOn = AnimationClipUtil.ToggleCreate(folderPath, path, toggleParameterName, true);
+            AnimationClip clipOff = AnimationClipUtil.ToggleCreate(folderPath, path, toggleParameterName, false);
+            var stateOn = AnimatorStateUtil.ToggleCreate(assetPath, clipOn, true);
+            var stateOff = AnimatorStateUtil.ToggleCreate(assetPath, clipOff, false);
+            var stateMachine = AnimatorStateMachineUtil.ToggleCreate(assetPath, stateOn, stateOff, toggleParameterName);
+            AnimatorStateUtil.ToggleLink(assetPath, stateOn, stateOff, parameterName);
+            var toggleLayer = CreateToggleLayer(stateMachine, toggleMenuName);
+
+            Undo.RecordObject(targetAnimatorController, "targetAnimatorController");
+            targetAnimatorController.AddLayer(toggleLayer);
+            targetAnimatorController.TryAddParameter(CreateToggleParameters(toggleParameterName));
+        }
+
+        private AnimatorControllerLayer CreateToggleLayer(AnimatorStateMachine stateMachine, string toggleMenuName)
+        {
+            return new AnimatorControllerLayer
             {
                 name = toggleMenuName,
-                stateMachine = AnimatorStateMachineUtil.ToggleCreate(clipOn, clipOff,
-                    toggleParameterName, toggleParameterName),
+                stateMachine = stateMachine,
                 blendingMode = AnimatorLayerBlendingMode.Override,
                 defaultWeight = 1,
             };
-            
-            targetAnimatorController.AddLayer(toggleLayer);
-            targetAnimatorController.TryAddParameter(new AnimatorControllerParameter
+        }
+
+        private AnimatorControllerParameter CreateToggleParameters(string toggleParameterName)
+        {
+            return new AnimatorControllerParameter
             {
                 name = toggleParameterName,
                 type = AnimatorControllerParameterType.Bool,
                 defaultBool = false
-            });
+            };
         }
 
         private void CreateVrcToggle(string toggleMenuName, string toggleParameterName, bool isSaved, bool defaultValue)
         {
-            vrcParameters.AddToggle(toggleParameterName, isSaved, defaultValue);
-            vrcTargetMenu.AddToggle(toggleMenuName, toggleParameterName);
+            if (vrcParameters == null)
+            {
+                Debug.LogAssertion(new NotImplementedException());
+            }
+            else
+            {
+                Undo.RecordObject(vrcParameters, "vrcParameters");
+                vrcParameters.AddToggle(toggleParameterName, isSaved, defaultValue);
+            }
+
+            if (vrcTargetMenu == null)
+            {
+                Debug.LogAssertion(new NotImplementedException());
+            }
+            else
+            {
+                Undo.RecordObject(vrcTargetMenu, "vrcTargetMenu");
+                vrcTargetMenu.AddToggle(toggleMenuName, toggleParameterName);
+            }
         }
 
         protected static void CreateFolderIfNotExist(string path)
         {
-            if (AssetDatabase.IsValidFolder(path)) 
+            if (AssetDatabase.IsValidFolder(path))
                 return;
 
             var parentFolderPath = Path.GetDirectoryName(path);
             if (parentFolderPath == "Asset")
                 return;
-            
+
             if (!string.IsNullOrEmpty(parentFolderPath))
             {
                 CreateFolderIfNotExist(parentFolderPath);
             }
-            
+
             var folderName = Path.GetFileName(path);
             AssetDatabase.CreateFolder(parentFolderPath, folderName);
         }

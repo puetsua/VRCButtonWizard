@@ -10,6 +10,7 @@ namespace Puetsua.VRCButtonWizard.Editor
         {
             if (controller.HasParameterName(parameter.name))
             {
+                Debug.LogWarning($"Parameter '{parameter.name}' already exist in controller '{controller.name}'.");
                 return;
             }
 

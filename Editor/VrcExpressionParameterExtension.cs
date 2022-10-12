@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 using VRC.SDK3.Avatars.ScriptableObjects;
 
 namespace Puetsua.VRCButtonWizard.Editor
@@ -20,6 +21,12 @@ namespace Puetsua.VRCButtonWizard.Editor
         private static void AddParameter(this VRCExpressionParameters parameters,
             VRCExpressionParameters.Parameter parameter)
         {
+            if (parameters.FindParameter(parameter.name) != null)
+            {
+                Debug.LogWarning($"Parameter '{parameter.name}' already exists in '{parameters.name}'.");
+                return;
+            }
+            
             var newLength = parameters.parameters.Length + 1;
             var newParam = new VRCExpressionParameters.Parameter[newLength];
             Array.Copy(parameters.parameters, newParam, parameters.parameters.Length);

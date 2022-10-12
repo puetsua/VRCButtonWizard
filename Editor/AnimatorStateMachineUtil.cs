@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
 
@@ -6,16 +7,13 @@ namespace Puetsua.VRCButtonWizard.Editor
 {
     internal static class AnimatorStateMachineUtil
     {
-        internal static AnimatorStateMachine ToggleCreate(Motion clipOn, Motion clipOff,
-            string name, string parameterName)
+        internal static AnimatorStateMachine ToggleCreate(string parentAssetPath,
+            AnimatorState stateOn, AnimatorState stateOff, string name)
         {
-            var stateOn = AnimatorStateUtil.ToggleCreate(clipOn, true);
-            var stateOff = AnimatorStateUtil.ToggleCreate(clipOff, false);
-            AnimatorStateUtil.ToggleLink(stateOn, stateOff, parameterName);
-            return new AnimatorStateMachine
+            var stateMachine = new AnimatorStateMachine
             {
                 name = name,
-                hideFlags = HideFlags.None,
+                hideFlags = HideFlags.HideInHierarchy,
                 states = new[]
                 {
                     new ChildAnimatorState
@@ -38,6 +36,9 @@ namespace Puetsua.VRCButtonWizard.Editor
                 entryTransitions = Array.Empty<AnimatorTransition>(),
                 behaviours = Array.Empty<StateMachineBehaviour>()
             };
+
+            AssetDatabase.AddObjectToAsset(stateMachine, parentAssetPath);
+            return stateMachine;
         }
     }
 }

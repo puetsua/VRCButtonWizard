@@ -12,6 +12,22 @@ namespace Puetsua.VRCButtonWizard.Editor
             var clipName = isOn
                 ? $"{animName}On"
                 : $"{animName}Off";
+
+            var guids = AssetDatabase.FindAssets($"t:AnimationClip {clipName}", new[] {assetFolderPath});
+            if (guids.Length == 1)
+            {
+                var path = AssetDatabase.GUIDToAssetPath(guids[0]);
+                var asset = AssetDatabase.LoadAssetAtPath<AnimationClip>(path);
+                Debug.Log($"Using existing AnimationClip '{clipName}' for toggle.");
+                return asset;
+            }
+
+            if (guids.Length > 1)
+            {
+                Debug.LogError("Multiple AnimationClips with same name?!");
+                return null;
+            }
+
             var clip = new AnimationClip
             {
                 name = clipName,

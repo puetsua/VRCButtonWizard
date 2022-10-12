@@ -10,11 +10,13 @@ namespace Puetsua.VRCButtonWizard.Editor
     {
         internal static string AssetPathPopup(string label, string path)
         {
+            if (string.IsNullOrEmpty(path) || !path.StartsWith("Assets"))
+                path = "Assets";
+
             var folderName = Path.GetFileName(path);
             var style = new GUIStyle("MiniPullDown");
-            if (string.IsNullOrEmpty(path))
+            if (folderName == "Assets")
             {
-                folderName = "[Assets]";
                 style.fontStyle = FontStyle.Italic;
             }
 
