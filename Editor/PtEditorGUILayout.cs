@@ -10,6 +10,11 @@ namespace Puetsua.VRCButtonWizard.Editor
     {
         internal static string AssetPathPopup(string label, string path)
         {
+            return AssetPathPopup(new GUIContent(label), path);
+        }
+
+        internal static string AssetPathPopup(GUIContent label, string path)
+        {
             if (string.IsNullOrEmpty(path) || !path.StartsWith("Assets"))
                 path = "Assets";
 
@@ -28,8 +33,8 @@ namespace Puetsua.VRCButtonWizard.Editor
             var rect = EditorGUILayout.GetControlRect(true, 18f, style);
             if (EditorGUI.DropdownButton(rect, folderContent, FocusType.Keyboard, style))
             {
-                AssetPathPopupWindow.lastSelectedPath = path;
-                PopupWindow.Show(rect, new AssetPathPopupWindow(rect.width));
+                AssetPathPopupWindow.lastSelectedPath = null;
+                PopupWindow.Show(rect, new AssetPathPopupWindow(rect.width, path));
             }
 
             EditorGUILayout.EndHorizontal();
@@ -61,8 +66,8 @@ namespace Puetsua.VRCButtonWizard.Editor
             var rect = EditorGUILayout.GetControlRect(true, 18f, style);
             if (EditorGUI.DropdownButton(rect, content, FocusType.Keyboard, style))
             {
-                VrcMenuPopupWindow.lastSelectedMenu = menu;
-                PopupWindow.Show(rect, new VrcMenuPopupWindow(rect.width, rootMenu));
+                VrcMenuPopupWindow.lastSelectedMenu = null;
+                PopupWindow.Show(rect, new VrcMenuPopupWindow(rect.width, rootMenu, menu));
             }
 
             EditorGUILayout.EndHorizontal();

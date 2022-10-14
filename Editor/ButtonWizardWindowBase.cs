@@ -11,7 +11,7 @@ namespace Puetsua.VRCButtonWizard.Editor
     public class ButtonWizardWindowBase : EditorWindow
     {
         public static bool debug = true;
-        protected static readonly Rect WindowPos = new Rect(400, 400, 400, 600);
+        protected static readonly Rect WindowPos = new Rect(200, 200, 400, 600);
         protected static readonly Vector2 MinWindowSize = new Vector2(450, 200);
         protected static readonly Vector2 MaxWindowSize = new Vector2(1280, 720);
         protected static LocalizedTextDataset Localized => LocalizedTextDataset.primary;
@@ -58,12 +58,13 @@ namespace Puetsua.VRCButtonWizard.Editor
 
         protected void ShowAvatarField(Action onChange = null)
         {
-            EditorGUI.BeginChangeCheck();
             var label = new GUIContent
             {
                 text = Localized.buttonWizardWindowLabelAvatar,
                 tooltip = Localized.buttonWizardWindowLabelTooltipAvatar
             };
+            
+            EditorGUI.BeginChangeCheck();
             avatar = EditorGUILayout.ObjectField(label, avatar,
                 typeof(VRCAvatarDescriptor), true) as VRCAvatarDescriptor;
             if (EditorGUI.EndChangeCheck() && avatar != null)
@@ -75,10 +76,14 @@ namespace Puetsua.VRCButtonWizard.Editor
 
         protected void ShowSaveLocation(Action onChange = null)
         {
+            var label = new GUIContent
+            {
+                text = Localized.advancedButtonWizardWindowLabelSaveLocation,
+                tooltip = Localized.advancedButtonWizardWindowLabelTooltipSaveLocation
+            };
+            
             EditorGUI.BeginChangeCheck();
-            EditorGUILayout.BeginHorizontal();
-            folderPath = PtEditorGUILayout.AssetPathPopup("Save Location", folderPath);
-            EditorGUILayout.EndHorizontal();
+            folderPath = PtEditorGUILayout.AssetPathPopup(label, folderPath);
             if (EditorGUI.EndChangeCheck())
             {
                 onChange?.Invoke();
@@ -134,8 +139,7 @@ namespace Puetsua.VRCButtonWizard.Editor
 
         protected void ShowVrcTargetMenuField()
         {
-            vrcTargetMenu = EditorGUILayout.ObjectField("Target Menu", vrcTargetMenu,
-                typeof(VRCExpressionsMenu), false) as VRCExpressionsMenu;
+            vrcTargetMenu = PtEditorGUILayout.VrcMenuPopup("Target Menu", VrcRootMenu, vrcTargetMenu);
         }
 
         protected void ShowVrcParameterField()

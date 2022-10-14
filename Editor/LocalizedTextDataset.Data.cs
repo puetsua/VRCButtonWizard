@@ -16,6 +16,8 @@
             // Advanced Button Wizard
             advancedButtonWizardWindowName = "Advanced Button Wizard",
             advancedButtonWizardWindowTitle = "VRChat Advanced Button Wizard",
+            advancedButtonWizardWindowLabelSaveLocation = "Save Location",
+            advancedButtonWizardWindowLabelTooltipSaveLocation = "Save Location for AnimationClip asset.",
 
             // Setting
             settingWindowLabelTitle = "Settings",
@@ -36,6 +38,8 @@
             // Advanced Button Wizard
             advancedButtonWizardWindowName = "進階版開關精靈",
             advancedButtonWizardWindowTitle = "VRChat 進階版開關精靈",
+            advancedButtonWizardWindowLabelSaveLocation = "儲存位置",
+            advancedButtonWizardWindowLabelTooltipSaveLocation = "動畫檔的儲存位置",
             // Setting
             settingWindowLabelTitle = "設定",
 

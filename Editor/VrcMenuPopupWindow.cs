@@ -17,10 +17,12 @@ namespace Puetsua.VRCButtonWizard.Editor
         private TreeViewState _treeViewState;
         private SearchField _searchField;
         private VRCExpressionsMenu _rootMenu;
+        private VRCExpressionsMenu _menu;
 
-        public VrcMenuPopupWindow(float windowWidth, VRCExpressionsMenu rootMenu)
+        public VrcMenuPopupWindow(float windowWidth, VRCExpressionsMenu rootMenu, VRCExpressionsMenu menu)
         {
             _rootMenu = rootMenu;
+            _menu = menu;
             _windowWidth = windowWidth;
         }
 
@@ -30,8 +32,12 @@ namespace Puetsua.VRCButtonWizard.Editor
                 _treeViewState = new TreeViewState();
 
             _treeView = new VrcMenuTreeView(_treeViewState, _rootMenu, OnItemDoubleClicked);
+
             _searchField = new SearchField();
             _searchField.downOrUpArrowKeyPressed += _treeView.SetFocusAndEnsureSelectedItem;
+
+            _treeView.ExpandAll();
+            _treeView.FocusOnMenu(_menu);
         }
 
         private void OnItemDoubleClicked(VRCExpressionsMenu menu)

@@ -16,9 +16,11 @@ namespace Puetsua.VRCButtonWizard.Editor
         private AssetPathTreeView _treeView;
         private TreeViewState _treeViewState;
         private SearchField _searchField;
+        private string _path;
 
-        public AssetPathPopupWindow(float windowWidth)
+        public AssetPathPopupWindow(float windowWidth, string path)
         {
+            _path = path;
             _windowWidth = windowWidth;
         }
 
@@ -28,8 +30,11 @@ namespace Puetsua.VRCButtonWizard.Editor
                 _treeViewState = new TreeViewState();
 
             _treeView = new AssetPathTreeView(_treeViewState, OnItemDoubleClicked);
+
             _searchField = new SearchField();
             _searchField.downOrUpArrowKeyPressed += _treeView.SetFocusAndEnsureSelectedItem;
+
+            _treeView.FocusOnPath(_path);
         }
 
         private void OnItemDoubleClicked(string path)

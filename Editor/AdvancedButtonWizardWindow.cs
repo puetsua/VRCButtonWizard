@@ -1,5 +1,6 @@
 ﻿using UnityEditor;
 using UnityEngine;
+using VRC.SDK3.Avatars.ScriptableObjects;
 
 namespace Puetsua.VRCButtonWizard.Editor
 {
@@ -17,7 +18,12 @@ namespace Puetsua.VRCButtonWizard.Editor
             GUILayout.BeginVertical(ButtonWizardStyles.Box);
             GUILayout.Label(Localized.advancedButtonWizardWindowTitle, ButtonWizardStyles.Title);
 
-            ShowSaveLocation(OnSaveLocationChanged);
+            GUILayout.BeginVertical(ButtonWizardStyles.MultipleFields);
+            EditorGUI.BeginChangeCheck();
+            ShowSaveLocation();
+            folderPath=EditorGUILayout.TextField(" ",folderPath);
+            GUILayout.EndVertical();
+            
             ShowAvatarField();
             if (avatar == null)
             {
@@ -27,7 +33,13 @@ namespace Puetsua.VRCButtonWizard.Editor
             {
                 ShowAnimatorField();
                 ShowTargetObjectField();
+                
+                GUILayout.BeginVertical(ButtonWizardStyles.MultipleFields);
                 ShowVrcTargetMenuField();
+                vrcTargetMenu = EditorGUILayout.ObjectField(" ", vrcTargetMenu,
+                    typeof(VRCExpressionsMenu), false) as VRCExpressionsMenu;
+                GUILayout.EndVertical();
+                
                 ShowMenuNameField();
                 ShowVrcParameterField();
                 ShowParameterNameField();
@@ -43,7 +55,7 @@ namespace Puetsua.VRCButtonWizard.Editor
             {
                 ShowLanguageOption();
             }
-            
+
             GUILayout.FlexibleSpace();
             ShowFooter();
         }
@@ -51,15 +63,6 @@ namespace Puetsua.VRCButtonWizard.Editor
         private void OnSaveLocationChanged()
         {
             SaveFolderPath();
-        }
-
-        private void TestZ()
-        {
-            var test = PtEditorGUILayout.VrcMenuPopup("Toggle Object", VrcRootMenu, vrcTargetMenu);
-            if (test != vrcTargetMenu)
-            {
-                Debug.Log($"{test.name} {vrcTargetMenu.name}");
-            }
         }
     }
 }

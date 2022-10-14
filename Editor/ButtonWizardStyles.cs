@@ -6,6 +6,8 @@ namespace Puetsua.VRCButtonWizard.Editor
     public static class ButtonWizardStyles
     {
         public static readonly GUIStyle Box = new GUIStyle("HelpBox");
+        public static readonly GUIStyle MultipleFields = new GUIStyle("Box");
+
         public static readonly GUIStyle LabelRight = new GUIStyle(EditorStyles.label)
         {
             alignment = TextAnchor.MiddleRight

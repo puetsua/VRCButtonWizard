@@ -12,34 +12,45 @@ namespace Puetsua.VRCButtonWizard.Editor
     public class VrcMenuTreeView : TreeView
     {
         private const int MaxDepth = 10;
-        
+
         public static bool debug = false;
-        
+
         private static int _maxDepthReached;
 
-        private readonly Action<VRCExpressionsMenu> _onItemDoubleClicked;
+        private readonly Action<VRCExpressionsMenu> _onItemSelect;
         private int _itemId;
         private VRCExpressionsMenu _rootMenu;
-        private List<VRCExpressionsMenu> _paths = new List<VRCExpressionsMenu>();
+        private List<VRCExpressionsMenu> _menus = new List<VRCExpressionsMenu>();
 
         public VrcMenuTreeView(TreeViewState treeViewState, VRCExpressionsMenu rootMenu,
-            Action<VRCExpressionsMenu> onItemDoubleClicked)
+            Action<VRCExpressionsMenu> onItemSelect)
             : base(treeViewState)
         {
             _rootMenu = rootMenu;
-            _onItemDoubleClicked = onItemDoubleClicked;
+            _onItemSelect = onItemSelect;
             Reload();
+        }
+
+        public void FocusOnMenu(VRCExpressionsMenu menu)
+        {
+            var id = _menus.IndexOf(menu);
+            
+            SetSelection(new List<int> {id});
+
+            foreach (var parentId in GetAncestors(id))
+            {
+                SetExpanded(parentId, true);
+            }
         }
 
         protected override TreeViewItem BuildRoot()
         {
             if (debug) _maxDepthReached = 0;
             _itemId = 0;
-            var items = GetItems("Assets", -1).ToList();
-            if (debug) Debug.Log($"Traversed maximum {_maxDepthReached} folder depth.");
 
-            TreeViewItem root = items[0];
-            items.RemoveAt(0);
+            var root = new TreeViewItem(-1, -1);
+            var items = GetItems(_rootMenu, _rootMenu.name, 0).ToList();
+            if (debug) Debug.Log($"Traversed maximum {_maxDepthReached} folder depth.");
 
             SetupParentsAndChildrenFromDepths(root, items);
 
@@ -48,36 +59,56 @@ namespace Puetsua.VRCButtonWizard.Editor
 
         protected override void DoubleClickedItem(int id)
         {
-            var path = _paths[id];
-            _onItemDoubleClicked(path);
+            _onItemSelect(_menus[id]);
         }
 
-        private IEnumerable<TreeViewItem> GetItems(string folderPath, int depth)
+        protected override void KeyEvent()
         {
-            // string[] subFolderPaths = AssetDatabase.GetSubFolders(folderPath);
+            var e = Event.current;
+            if (e.type == EventType.KeyDown &&
+                e.keyCode == KeyCode.Return)
+            {
+                _onItemSelect(_menus[state.lastClickedID]);
+            }
+        }
+
+        private IEnumerable<TreeViewItem> GetItems(VRCExpressionsMenu menu, string menuName, int depth)
+        {
+            var subMenus = new List<(VRCExpressionsMenu, string)>();
+            foreach (var control in menu.controls)
+            {
+                if (control.type == VRCExpressionsMenu.Control.ControlType.SubMenu &&
+                    control.subMenu != null)
+                {
+                    subMenus.Add((control.subMenu, control.name));
+                }
+            }
+
             var items = new List<TreeViewItem>
             {
                 new TreeViewItem
                 {
-                    id = _itemId++, 
-                    depth = depth, 
-                    displayName = Path.GetFileName(folderPath),
+                    id = _itemId++,
+                    depth = depth,
+                    displayName = menu.name == menuName
+                        ? menu.name
+                        : $"{menu.name} ({menuName})",
                 }
             };
-            // _paths.Add(folderPath);
-            //
-            // if (depth > MaxDepth)
-            //     return items;
-            //
-            // foreach (string subFolderPath in subFolderPaths)
-            // {
-            //     items.AddRange(GetItems(subFolderPath, depth + 1));
-            // }
-            //
-            // if (debug && depth > _maxDepthReached)
-            // {
-            //     _maxDepthReached = depth;
-            // }
+            _menus.Add(menu);
+
+            if (depth > MaxDepth)
+                return items;
+
+            foreach (var subMenu in subMenus)
+            {
+                items.AddRange(GetItems(subMenu.Item1, subMenu.Item2, depth + 1));
+            }
+
+            if (debug && depth > _maxDepthReached)
+            {
+                _maxDepthReached = depth;
+            }
 
             return items;
         }

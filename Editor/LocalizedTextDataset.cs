@@ -35,6 +35,8 @@ namespace Puetsua.VRCButtonWizard.Editor
             // Advanced Button Wizard
             advancedButtonWizardWindowName,
             advancedButtonWizardWindowTitle,
+            advancedButtonWizardWindowLabelSaveLocation,
+            advancedButtonWizardWindowLabelTooltipSaveLocation,
             // Setting
             settingWindowLabelTitle,
             // Other
