@@ -34,7 +34,7 @@ namespace Puetsua.VRCButtonWizard.Editor
         public void FocusOnMenu(VRCExpressionsMenu menu)
         {
             var id = _menus.IndexOf(menu);
-            
+
             SetSelection(new List<int> {id});
 
             foreach (var parentId in GetAncestors(id))

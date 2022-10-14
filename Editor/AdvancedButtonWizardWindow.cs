@@ -21,9 +21,9 @@ namespace Puetsua.VRCButtonWizard.Editor
             GUILayout.BeginVertical(ButtonWizardStyles.MultipleFields);
             EditorGUI.BeginChangeCheck();
             ShowSaveLocation();
-            folderPath=EditorGUILayout.TextField(" ",folderPath);
+            folderPath = EditorGUILayout.TextField(" ", folderPath);
             GUILayout.EndVertical();
-            
+
             ShowAvatarField();
             if (avatar == null)
             {
@@ -33,13 +33,13 @@ namespace Puetsua.VRCButtonWizard.Editor
             {
                 ShowAnimatorField();
                 ShowTargetObjectField();
-                
+
                 GUILayout.BeginVertical(ButtonWizardStyles.MultipleFields);
                 ShowVrcTargetMenuField();
                 vrcTargetMenu = EditorGUILayout.ObjectField(" ", vrcTargetMenu,
                     typeof(VRCExpressionsMenu), false) as VRCExpressionsMenu;
                 GUILayout.EndVertical();
-                
+
                 ShowMenuNameField();
                 ShowVrcParameterField();
                 ShowParameterNameField();

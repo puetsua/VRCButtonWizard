@@ -32,7 +32,7 @@ namespace Puetsua.VRCButtonWizard.Editor
             var id = _paths.IndexOf(path);
 
             SetSelection(new List<int> {id});
-            
+
             foreach (var parentId in GetAncestors(id))
             {
                 SetExpanded(parentId, true);

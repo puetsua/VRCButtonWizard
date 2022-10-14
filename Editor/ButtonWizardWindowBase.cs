@@ -63,7 +63,7 @@ namespace Puetsua.VRCButtonWizard.Editor
                 text = Localized.buttonWizardWindowLabelAvatar,
                 tooltip = Localized.buttonWizardWindowLabelTooltipAvatar
             };
-            
+
             EditorGUI.BeginChangeCheck();
             avatar = EditorGUILayout.ObjectField(label, avatar,
                 typeof(VRCAvatarDescriptor), true) as VRCAvatarDescriptor;
@@ -81,7 +81,7 @@ namespace Puetsua.VRCButtonWizard.Editor
                 text = Localized.advancedButtonWizardWindowLabelSaveLocation,
                 tooltip = Localized.advancedButtonWizardWindowLabelTooltipSaveLocation
             };
-            
+
             EditorGUI.BeginChangeCheck();
             folderPath = PtEditorGUILayout.AssetPathPopup(label, folderPath);
             if (EditorGUI.EndChangeCheck())
