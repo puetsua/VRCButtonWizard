@@ -1,27 +1,51 @@
 ﻿using System.IO;
 using UnityEditor;
 using UnityEngine;
-using VRC.SDK3.Avatars.Components;
 
 namespace Puetsua.VRCButtonWizard.Editor
 {
-    public class ButtonWizardWindow : ButtonWizardWindowBase
+    public class ButtonWizardWindow : ButtonWizardWindowBase, IHasCustomMenu
     {
-        [MenuItem("Tools/VRChat Button Wizard")]
+        [MenuItem("Tools/VRChat Button Wizard", false, ButtonWizardConst.MenuItemPriority)]
         private static void OpenWindow()
         {
-            EditorWindow wnd = GetWindow<ButtonWizardWindow>();
-            wnd.titleContent = new GUIContent("Button Wizard");
+            var wnd = GetWindow<ButtonWizardWindow>(Localized.buttonWizardWindowName);
             wnd.position = WindowPos;
             wnd.minSize = MinWindowSize;
             wnd.maxSize = MaxWindowSize;
         }
 
+        private static void OpenAdvanceWindow()
+        {
+            var wnd = GetWindow<AdvancedButtonWizardWindow>(Localized.advancedButtonWizardWindowName);
+            wnd.position = WindowPos;
+            wnd.minSize = MinWindowSize;
+            wnd.maxSize = MaxWindowSize;
+        }
+
+        void IHasCustomMenu.AddItemsToMenu(GenericMenu menu)
+        {
+            menu.AddItem(new GUIContent(Localized.buttonWizardWindowMenuAdvanced), false, OpenAdvanceWindow);
+        }
+
+        private void CreateGUI()
+        {
+            SetFolderPath();
+        }
+
         private void OnGUI()
         {
-            GUILayout.Label("VRChat Button Wizard", EditorStyles.boldLabel);
+            ShowLanguageOption();
+
+            GUILayout.BeginVertical(ButtonWizardStyles.Box);
+            GUILayout.Label(Localized.buttonWizardWindowTitle, ButtonWizardStyles.Title);
+
             ShowAvatarField(OnAvatarChanged);
-            if (avatar != null)
+            if (avatar == null)
+            {
+                EditorGUILayout.HelpBox(Localized.buttonWizardWindowMsgNoAvatar, MessageType.Info);
+            }
+            else
             {
                 ShowTargetObjectField();
                 ShowMenuNameField();
@@ -29,6 +53,11 @@ namespace Puetsua.VRCButtonWizard.Editor
                 ShowParameterDefaultField();
                 ShowCreateToggleButton();
             }
+
+            GUILayout.EndVertical();
+
+            GUILayout.FlexibleSpace();
+            ShowFooter();
         }
 
         private void OnAvatarChanged()
@@ -38,6 +67,9 @@ namespace Puetsua.VRCButtonWizard.Editor
 
         private void SetFolderPath()
         {
+            if (avatar == null)
+                return;
+
             var path = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(avatar);
             if (string.IsNullOrEmpty(path))
             {
@@ -47,7 +79,8 @@ namespace Puetsua.VRCButtonWizard.Editor
             path = Path.GetDirectoryName(path) ?? "";
             path = Path.Combine(path, "Animations");
 
-            Debug.Log($"{path} {avatar.gameObject.scene.path}");
+            folderPath = path;
+            Debug.Log($"Planned to save generated AnimationClip to '{path}'");
         }
     }
 }

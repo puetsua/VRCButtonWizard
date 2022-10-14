@@ -3,7 +3,6 @@ using System.IO;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using VRC.SDK3.Avatars.Components;
 using VRC.SDK3.Avatars.ScriptableObjects;
 
@@ -12,9 +11,10 @@ namespace Puetsua.VRCButtonWizard.Editor
     public class ButtonWizardWindowBase : EditorWindow
     {
         public static bool debug = true;
-        protected static readonly Rect WindowPos = new Rect(400, 400, 600, 400);
+        protected static readonly Rect WindowPos = new Rect(400, 400, 400, 600);
         protected static readonly Vector2 MinWindowSize = new Vector2(450, 200);
         protected static readonly Vector2 MaxWindowSize = new Vector2(1280, 720);
+        protected static LocalizedTextDataset Localized => LocalizedTextDataset.primary;
 
         protected VRCAvatarDescriptor avatar;
         protected AnimatorController targetAnimatorController;
@@ -28,6 +28,21 @@ namespace Puetsua.VRCButtonWizard.Editor
         protected bool defaultBool;
 
         protected VRCExpressionsMenu VrcRootMenu => avatar == null ? null : avatar.expressionsMenu;
+
+        protected void ShowLanguageOption()
+        {
+            var selectedLanguage = (SupportedLanguage) EditorPrefs.GetInt(
+                EditorPrefConst.Language, (int) SupportedLanguage.English);
+
+            EditorGUI.BeginChangeCheck();
+            selectedLanguage = (SupportedLanguage) EditorGUILayout.EnumPopup(
+                Localized.buttonWizardSettingLabelLanguage, selectedLanguage);
+            if (EditorGUI.EndChangeCheck())
+            {
+                LocalizedTextDataset.SetLanguage(selectedLanguage);
+                EditorPrefs.SetInt(EditorPrefConst.Language, (int) selectedLanguage);
+            }
+        }
 
         protected void LoadFolderPath()
         {
@@ -44,7 +59,12 @@ namespace Puetsua.VRCButtonWizard.Editor
         protected void ShowAvatarField(Action onChange = null)
         {
             EditorGUI.BeginChangeCheck();
-            avatar = EditorGUILayout.ObjectField("Avatar", avatar,
+            var label = new GUIContent
+            {
+                text = Localized.buttonWizardWindowLabelAvatar,
+                tooltip = Localized.buttonWizardWindowLabelTooltipAvatar
+            };
+            avatar = EditorGUILayout.ObjectField(label, avatar,
                 typeof(VRCAvatarDescriptor), true) as VRCAvatarDescriptor;
             if (EditorGUI.EndChangeCheck() && avatar != null)
             {
@@ -254,6 +274,12 @@ namespace Puetsua.VRCButtonWizard.Editor
 
             var folderName = Path.GetFileName(path);
             AssetDatabase.CreateFolder(parentFolderPath, folderName);
+        }
+
+        protected static void ShowFooter()
+        {
+            GUILayout.Label(ButtonWizardConst.Version, ButtonWizardStyles.LabelRight);
+            GUILayout.Label("Pue-Tsuâ Workshop", ButtonWizardStyles.LabelRight);
         }
     }
 }

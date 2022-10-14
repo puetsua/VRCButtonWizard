@@ -5,15 +5,7 @@ namespace Puetsua.VRCButtonWizard.Editor
 {
     public class AdvancedButtonWizardWindow : ButtonWizardWindowBase
     {
-        [MenuItem("Tools/Advanced VRChat Button Wizard")]
-        private static void OpenWindow()
-        {
-            EditorWindow wnd = GetWindow<AdvancedButtonWizardWindow>();
-            wnd.titleContent = new GUIContent("Advanced Button Wizard");
-            wnd.position = WindowPos;
-            wnd.minSize = MinWindowSize;
-            wnd.maxSize = MaxWindowSize;
-        }
+        private bool settingFoldout;
 
         private void CreateGUI()
         {
@@ -22,11 +14,16 @@ namespace Puetsua.VRCButtonWizard.Editor
 
         private void OnGUI()
         {
-            GUILayout.Label("Advanced VRChat Button Wizard", EditorStyles.boldLabel);
+            GUILayout.BeginVertical(ButtonWizardStyles.Box);
+            GUILayout.Label(Localized.advancedButtonWizardWindowTitle, ButtonWizardStyles.Title);
 
             ShowSaveLocation(OnSaveLocationChanged);
             ShowAvatarField();
-            if (avatar != null)
+            if (avatar == null)
+            {
+                EditorGUILayout.HelpBox(Localized.buttonWizardWindowMsgNoAvatar, MessageType.Info);
+            }
+            else
             {
                 ShowAnimatorField();
                 ShowTargetObjectField();
@@ -39,7 +36,16 @@ namespace Puetsua.VRCButtonWizard.Editor
                 ShowCreateToggleButton();
             }
 
-            // TestZ();
+            GUILayout.EndVertical();
+
+            settingFoldout = EditorGUILayout.Foldout(settingFoldout, Localized.settingWindowLabelTitle);
+            if (settingFoldout)
+            {
+                ShowLanguageOption();
+            }
+            
+            GUILayout.FlexibleSpace();
+            ShowFooter();
         }
 
         private void OnSaveLocationChanged()
