@@ -173,7 +173,7 @@ namespace Puetsua.VRCButtonWizard.Editor
                 text = Localized.baseWindowLabelTargetObject,
                 tooltip = Localized.baseWindowTooltipTargetObject
             };
-            
+
             EditorGUI.BeginChangeCheck();
             targetObject = EditorGUILayout.ObjectField(label, targetObject,
                 typeof(GameObject), true) as GameObject;
@@ -330,8 +330,19 @@ namespace Puetsua.VRCButtonWizard.Editor
 
         protected static void ShowFooter()
         {
+            EditorGUILayout.BeginHorizontal();
+            PtEditorGUILayout.CreateLink("GitHub",
+                "https://github.com/puetsua/VRCButtonWizard",
+                "Favorite");
             GUILayout.Label(ButtonWizardConst.Version, ButtonWizardStyles.LabelRight);
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            PtEditorGUILayout.CreateLink("Twitter",
+                "https://twitter.com/puetsua",
+                "Favorite");
             GUILayout.Label("Pue-Tsuâ Workshop", ButtonWizardStyles.LabelRight);
+            EditorGUILayout.EndHorizontal();
         }
     }
 }

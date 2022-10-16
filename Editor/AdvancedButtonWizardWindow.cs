@@ -26,6 +26,7 @@ namespace Puetsua.VRCButtonWizard.Editor
             {
                 OnSaveLocationChanged();
             }
+
             GUILayout.EndVertical();
 
             ShowAvatarField();

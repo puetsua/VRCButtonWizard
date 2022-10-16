@@ -86,5 +86,15 @@ namespace Puetsua.VRCButtonWizard.Editor
 
             return menu;
         }
+
+        internal static void CreateLink(string text, string url, string iconName)
+        {
+            var labelTwitter = EditorGUIUtility.IconContent(iconName);
+            labelTwitter.text = text;
+            if (GUILayout.Button(labelTwitter, EditorStyles.linkLabel))
+            {
+                Application.OpenURL(url);
+            }
+        }
     }
 }
