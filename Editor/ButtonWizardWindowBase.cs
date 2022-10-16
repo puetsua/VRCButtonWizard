@@ -10,7 +10,7 @@ namespace Puetsua.VRCButtonWizard.Editor
 {
     public class ButtonWizardWindowBase : EditorWindow
     {
-        public static bool debug = true;
+        public static bool debug = false;
         protected static readonly Rect WindowPos = new Rect(200, 200, 400, 600);
         protected static readonly Vector2 MinWindowSize = new Vector2(450, 200);
         protected static readonly Vector2 MaxWindowSize = new Vector2(1280, 720);
@@ -60,8 +60,8 @@ namespace Puetsua.VRCButtonWizard.Editor
         {
             var label = new GUIContent
             {
-                text = Localized.buttonWizardWindowLabelAvatar,
-                tooltip = Localized.buttonWizardWindowLabelTooltipAvatar
+                text = Localized.baseWindowLabelAvatar,
+                tooltip = Localized.baseWindowTooltipAvatar
             };
 
             EditorGUI.BeginChangeCheck();
@@ -113,7 +113,7 @@ namespace Puetsua.VRCButtonWizard.Editor
             {
                 if (!targetObject.transform.IsChildOf(avatar.transform))
                 {
-                    EditorGUILayout.HelpBox("Target Object is not under avatar.", MessageType.Error);
+                    EditorGUILayout.HelpBox(Localized.baseWindowMsgObjectNotUnderAvatar, MessageType.Error);
                     return;
                 }
             }
@@ -133,25 +133,49 @@ namespace Puetsua.VRCButtonWizard.Editor
 
         protected void ShowAnimatorField()
         {
-            targetAnimatorController = EditorGUILayout.ObjectField("Animator", targetAnimatorController,
+            var label = new GUIContent
+            {
+                text = Localized.baseWindowLabelAnimator,
+                tooltip = Localized.baseWindowTooltipAnimator
+            };
+
+            targetAnimatorController = EditorGUILayout.ObjectField(label, targetAnimatorController,
                 typeof(AnimatorController), true) as AnimatorController;
         }
 
         protected void ShowVrcTargetMenuField()
         {
-            vrcTargetMenu = PtEditorGUILayout.VrcMenuPopup("Target Menu", VrcRootMenu, vrcTargetMenu);
+            var label = new GUIContent
+            {
+                text = Localized.baseWindowLabelVrcTargetMenu,
+                tooltip = Localized.baseWindowTooltipVrcTargetMenu
+            };
+
+            vrcTargetMenu = PtEditorGUILayout.VrcMenuPopup(label, VrcRootMenu, vrcTargetMenu);
         }
 
         protected void ShowVrcParameterField()
         {
-            vrcParameters = EditorGUILayout.ObjectField("Parameters", vrcParameters,
+            var label = new GUIContent
+            {
+                text = Localized.baseWindowLabelVrcParameters,
+                tooltip = Localized.baseWindowTooltipVrcParameters
+            };
+
+            vrcParameters = EditorGUILayout.ObjectField(label, vrcParameters,
                 typeof(VRCExpressionParameters), false) as VRCExpressionParameters;
         }
 
         protected void ShowTargetObjectField(Action onChange = null)
         {
+            var label = new GUIContent
+            {
+                text = Localized.baseWindowLabelTargetObject,
+                tooltip = Localized.baseWindowTooltipTargetObject
+            };
+            
             EditorGUI.BeginChangeCheck();
-            targetObject = EditorGUILayout.ObjectField("Toggle Object", targetObject,
+            targetObject = EditorGUILayout.ObjectField(label, targetObject,
                 typeof(GameObject), true) as GameObject;
             if (EditorGUI.EndChangeCheck() && targetAnimatorController != null)
             {
@@ -175,22 +199,46 @@ namespace Puetsua.VRCButtonWizard.Editor
 
         protected void ShowMenuNameField()
         {
-            menuName = EditorGUILayout.TextField("Menu Name", menuName);
+            var label = new GUIContent
+            {
+                text = Localized.baseWindowLabelMenuName,
+                tooltip = Localized.baseWindowTooltipMenuName
+            };
+
+            menuName = EditorGUILayout.TextField(label, menuName);
         }
 
         protected void ShowParameterNameField()
         {
-            parameterName = EditorGUILayout.TextField("Parameter Name", parameterName);
+            var label = new GUIContent
+            {
+                text = Localized.baseWindowLabelParameterName,
+                tooltip = Localized.baseWindowTooltipParameterName
+            };
+
+            parameterName = EditorGUILayout.TextField(label, parameterName);
         }
 
         protected void ShowParameterSaveField()
         {
-            isParamSaved = EditorGUILayout.Toggle("Save Parameter", isParamSaved);
+            var label = new GUIContent
+            {
+                text = Localized.baseWindowLabelSaveParameter,
+                tooltip = Localized.baseWindowTooltipSaveParameter
+            };
+
+            isParamSaved = EditorGUILayout.Toggle(label, isParamSaved);
         }
 
         protected void ShowParameterDefaultField()
         {
-            defaultBool = EditorGUILayout.Toggle("Default Value", defaultBool);
+            var label = new GUIContent
+            {
+                text = Localized.baseWindowLabelDefaultValue,
+                tooltip = Localized.baseWindowTooltipDefaultValue
+            };
+
+            defaultBool = EditorGUILayout.Toggle(label, defaultBool);
         }
 
         private void CreateToggle(string toggleMenuName, string toggleParameterName)

@@ -24,21 +24,45 @@ namespace Puetsua.VRCButtonWizard.Editor
         }
 
         public string
+            // Base
+            baseWindowLabelAvatar,
+            baseWindowLabelAnimator,
+            baseWindowLabelVrcTargetMenu,
+            baseWindowLabelVrcParameters,
+            baseWindowLabelTargetObject,
+            baseWindowLabelMenuName,
+            baseWindowLabelParameterName,
+            baseWindowLabelSaveParameter,
+            baseWindowLabelDefaultValue,
+            // -- Tooltip
+            baseWindowTooltipAvatar,
+            baseWindowTooltipAnimator,
+            baseWindowTooltipVrcTargetMenu,
+            baseWindowTooltipVrcParameters,
+            baseWindowTooltipTargetObject,
+            baseWindowTooltipMenuName,
+            baseWindowTooltipParameterName,
+            baseWindowTooltipSaveParameter,
+            baseWindowTooltipDefaultValue,
+            // -- Messages
+            baseWindowMsgNoAvatar,
+            baseWindowMsgObjectNotUnderAvatar,
+
             // Button Wizard
             buttonWizardWindowName,
             buttonWizardWindowTitle,
             buttonWizardSettingLabelLanguage,
-            buttonWizardWindowLabelAvatar,
-            buttonWizardWindowLabelTooltipAvatar,
-            buttonWizardWindowMsgNoAvatar,
             buttonWizardWindowMenuAdvanced,
+
             // Advanced Button Wizard
             advancedButtonWizardWindowName,
             advancedButtonWizardWindowTitle,
             advancedButtonWizardWindowLabelSaveLocation,
             advancedButtonWizardWindowLabelTooltipSaveLocation,
+
             // Setting
             settingWindowLabelTitle,
+
             // Other
             creatorName;
 

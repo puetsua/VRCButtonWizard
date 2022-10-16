@@ -49,7 +49,12 @@ namespace Puetsua.VRCButtonWizard.Editor
             return path;
         }
 
-        internal static VRCExpressionsMenu VrcMenuPopup(string label, VRCExpressionsMenu rootMenu,
+        internal static string VrcMenuPopup(string label, string path)
+        {
+            return AssetPathPopup(new GUIContent(label), path);
+        }
+        
+        internal static VRCExpressionsMenu VrcMenuPopup(GUIContent label, VRCExpressionsMenu rootMenu,
             VRCExpressionsMenu menu)
         {
             var style = new GUIStyle("MiniPullDown");

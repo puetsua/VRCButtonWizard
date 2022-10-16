@@ -43,7 +43,7 @@ namespace Puetsua.VRCButtonWizard.Editor
             ShowAvatarField(OnAvatarChanged);
             if (avatar == null)
             {
-                EditorGUILayout.HelpBox(Localized.buttonWizardWindowMsgNoAvatar, MessageType.Info);
+                EditorGUILayout.HelpBox(Localized.baseWindowMsgNoAvatar, MessageType.Info);
             }
             else
             {

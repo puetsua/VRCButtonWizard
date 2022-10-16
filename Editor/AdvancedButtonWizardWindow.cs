@@ -22,12 +22,16 @@ namespace Puetsua.VRCButtonWizard.Editor
             EditorGUI.BeginChangeCheck();
             ShowSaveLocation();
             folderPath = EditorGUILayout.TextField(" ", folderPath);
+            if (EditorGUI.EndChangeCheck())
+            {
+                OnSaveLocationChanged();
+            }
             GUILayout.EndVertical();
 
             ShowAvatarField();
             if (avatar == null)
             {
-                EditorGUILayout.HelpBox(Localized.buttonWizardWindowMsgNoAvatar, MessageType.Info);
+                EditorGUILayout.HelpBox(Localized.baseWindowMsgNoAvatar, MessageType.Info);
             }
             else
             {
