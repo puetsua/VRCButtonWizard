@@ -3,7 +3,7 @@
     public static class ButtonWizardConst
     {
         public const int MajorVersion = 0;
-        public const int MinorVersion = 1;
+        public const int MinorVersion = 2;
         public const int PatchVersion = 0;
         public const string PreRelease = "";
 
