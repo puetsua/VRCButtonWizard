@@ -7,3 +7,6 @@
 
 ![where_to_find_the_tool.png](Documentation~/where_to_find_the_tool.png)
 
+## 已知問題
+
+1. VRC Descriptor內必須已經有VRC Expression Menu、VRC Expression Parameter跟FX Layer Animator，目前工具不會幫你自動建。
