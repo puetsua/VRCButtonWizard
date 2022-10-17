@@ -14,7 +14,7 @@ namespace Puetsua.VRCButtonWizard.Editor
                 name = isOn ? "On" : "Off",
                 hideFlags = HideFlags.HideInHierarchy,
                 motion = motion,
-                writeDefaultValues = false,
+                writeDefaultValues = true,
                 tag = null,
                 transitions = Array.Empty<AnimatorStateTransition>(),
                 behaviours = Array.Empty<StateMachineBehaviour>()
