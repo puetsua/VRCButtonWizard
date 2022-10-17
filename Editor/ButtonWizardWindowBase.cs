@@ -260,10 +260,11 @@ namespace Puetsua.VRCButtonWizard.Editor
             var stateMachine = AnimatorStateMachineUtil.ToggleCreate(assetPath, stateOn, stateOff, toggleParameterName);
             AnimatorStateUtil.ToggleLink(assetPath, stateOn, stateOff, parameterName);
             var toggleLayer = CreateToggleLayer(stateMachine, toggleMenuName);
-
-            Undo.RecordObject(targetAnimatorController, "targetAnimatorController");
+            
             targetAnimatorController.AddLayer(toggleLayer);
             targetAnimatorController.TryAddParameter(CreateToggleParameters(toggleParameterName));
+            
+            EditorUtility.SetDirty(targetAnimatorController);
         }
 
         private AnimatorControllerLayer CreateToggleLayer(AnimatorStateMachine stateMachine, string toggleMenuName)
@@ -295,8 +296,8 @@ namespace Puetsua.VRCButtonWizard.Editor
             }
             else
             {
-                Undo.RecordObject(vrcParameters, "vrcParameters");
                 vrcParameters.AddToggle(toggleParameterName, isSaved, defaultValue);
+                EditorUtility.SetDirty(vrcParameters);
             }
 
             if (vrcTargetMenu == null)
@@ -305,8 +306,8 @@ namespace Puetsua.VRCButtonWizard.Editor
             }
             else
             {
-                Undo.RecordObject(vrcTargetMenu, "vrcTargetMenu");
                 vrcTargetMenu.AddToggle(toggleMenuName, toggleParameterName);
+                EditorUtility.SetDirty(vrcTargetMenu);
             }
         }
 
