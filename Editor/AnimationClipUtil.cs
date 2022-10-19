@@ -6,7 +6,7 @@ namespace Puetsua.VRCButtonWizard.Editor
 {
     internal static class AnimationClipUtil
     {
-        internal static AnimationClip ToggleCreate(string assetFolderPath, string hierarchyPath, string animName,
+        internal static AnimationClip ToggleCreate(string assetFolderPath, string[] hierarchyPaths, string animName,
             bool isOn)
         {
             var clipName = isOn
@@ -35,7 +35,10 @@ namespace Puetsua.VRCButtonWizard.Editor
             };
 
             var curve = AnimationCurve.Constant(0, 0, isOn ? 1 : 0);
-            clip.SetCurve(hierarchyPath, typeof(GameObject), PropertyNameConst.IsActive, curve);
+            foreach (var hierarchyPath in hierarchyPaths)
+            {
+                clip.SetCurve(hierarchyPath, typeof(GameObject), PropertyNameConst.IsActive, curve);
+            }
             AnimationUtility.SetAnimationClipSettings(clip, new AnimationClipSettings
             {
                 loopTime = true,

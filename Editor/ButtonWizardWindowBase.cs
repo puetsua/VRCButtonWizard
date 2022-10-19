@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEditor.Animations;
@@ -18,7 +19,7 @@ namespace Puetsua.VRCButtonWizard.Editor
 
         protected VRCAvatarDescriptor avatar;
         protected AnimatorController targetAnimatorController;
-        protected GameObject targetObject;
+        protected List<GameObject> targetObjects = new List<GameObject>();
         protected VRCExpressionParameters vrcParameters;
         protected VRCExpressionsMenu vrcTargetMenu;
         protected string menuName;
@@ -98,6 +99,7 @@ namespace Puetsua.VRCButtonWizard.Editor
                 targetAnimatorController = GetAnimatorController(avatarDesc);
             }
 
+            targetObjects.Clear();
             vrcParameters = avatarDesc.expressionParameters;
             vrcTargetMenu = avatarDesc.expressionsMenu;
         }
@@ -109,18 +111,23 @@ namespace Puetsua.VRCButtonWizard.Editor
 
         protected void ShowCreateToggleButton()
         {
-            if (targetObject != null)
+            bool areTargetObjectValid = true;
+            if (targetObjects.Count > 0)
             {
-                if (!targetObject.transform.IsChildOf(avatar.transform))
+                if (!AreTargetObjectsHierarchyValid())
                 {
                     EditorGUILayout.HelpBox(Localized.baseWindowMsgObjectNotUnderAvatar, MessageType.Error);
-                    return;
+                    areTargetObjectValid = false;
                 }
+            }
+            else
+            {
+                areTargetObjectValid = false;
             }
 
             GUI.enabled = !string.IsNullOrWhiteSpace(menuName) &&
                           !string.IsNullOrWhiteSpace(parameterName) &&
-                          targetObject != null;
+                          areTargetObjectValid;
             if (GUILayout.Button("Create Toggle"))
             {
                 CreateVrcToggle(menuName, parameterName, isParamSaved, defaultBool);
@@ -129,6 +136,21 @@ namespace Puetsua.VRCButtonWizard.Editor
             }
 
             GUI.enabled = true;
+        }
+
+        private bool AreTargetObjectsHierarchyValid()
+        {
+            foreach (var targetObject in targetObjects)
+            {
+                if (targetObject == null)
+                    continue;
+                if (!targetObject.transform.IsChildOf(avatar.transform))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         protected void ShowAnimatorField()
@@ -166,26 +188,80 @@ namespace Puetsua.VRCButtonWizard.Editor
                 typeof(VRCExpressionParameters), false) as VRCExpressionParameters;
         }
 
-        protected void ShowTargetObjectField(Action onChange = null)
+        protected void ShowTargetObjectsField(Action onChange = null)
         {
+            EditorGUI.BeginChangeCheck();
+
+            EditorGUILayout.BeginHorizontal(ButtonWizardStyles.MultipleFields);
+
             var label = new GUIContent
             {
                 text = Localized.baseWindowLabelTargetObject,
                 tooltip = Localized.baseWindowTooltipTargetObject
             };
 
-            EditorGUI.BeginChangeCheck();
-            targetObject = EditorGUILayout.ObjectField(label, targetObject,
-                typeof(GameObject), true) as GameObject;
+            EditorGUILayout.PrefixLabel(label);
+            EditorGUILayout.BeginVertical(GUILayout.MinHeight(100));
+
+            if (targetObjects.Count == 0)
+            {
+                EditorGUILayout.LabelField("[Drop Objects Here]",GUILayout.MinHeight(100));
+            }
+            else
+            {
+                ShowTargetObjects();
+            }
+
+            EditorGUILayout.EndVertical();
+            EditorGUILayout.EndHorizontal();
+
+            var gobjs = PtEditorGUILayout.CheckDragAndDrop<GameObject>();
+            if (gobjs.Count > 0)
+            {
+                foreach (var gobj in gobjs)
+                {
+                    if (!targetObjects.Contains(gobj))
+                        targetObjects.Add(gobj);
+                }
+            }
+
             if (EditorGUI.EndChangeCheck() && targetAnimatorController != null)
             {
-                SetupTargetObjectSetting(targetObject);
+                // targetObjects.CleanUpNullObjects();
+                if (targetObjects.Count > 0)
+                    SetupTargetObjectSetting(targetObjects[0]);
                 onChange?.Invoke();
             }
         }
 
+        private void ShowTargetObjects()
+        {
+            for (int i = 0; i < targetObjects.Count; i++)
+            {
+                targetObjects[i] = ShowTargetObject(targetObjects[i], out bool isMinusClicked);
+                if (isMinusClicked)
+                {
+                    targetObjects[i] = null;
+                }
+            }
+
+            targetObjects.RemoveAll(x => x == null);
+        }
+
+        private GameObject ShowTargetObject(GameObject target, out bool isMinusClicked)
+        {
+            EditorGUILayout.BeginHorizontal();
+            target = EditorGUILayout.ObjectField(target, typeof(GameObject), true) as GameObject;
+            isMinusClicked = GUILayout.Button(EditorGUIUtility.IconContent("Toolbar Minus"), GUILayout.Width(30));
+            EditorGUILayout.EndHorizontal();
+            return target;
+        }
+
         private void SetupTargetObjectSetting(GameObject target)
         {
+            if (target == null)
+                return;
+
             if (string.IsNullOrWhiteSpace(menuName))
             {
                 menuName = target.name;
@@ -251,19 +327,24 @@ namespace Puetsua.VRCButtonWizard.Editor
 
             CreateFolderIfNotExist(folderPath);
 
-            string path = targetObject.transform.GetHierarchyPath(avatar.transform);
+            var paths = new string[targetObjects.Count];
+            for (int i = 0; i < targetObjects.Count; i++)
+            {
+                paths[i] = targetObjects[i].transform.GetHierarchyPath(avatar.transform);
+            }
+
             var assetPath = AssetDatabase.GetAssetPath(targetAnimatorController);
-            AnimationClip clipOn = AnimationClipUtil.ToggleCreate(folderPath, path, toggleParameterName, true);
-            AnimationClip clipOff = AnimationClipUtil.ToggleCreate(folderPath, path, toggleParameterName, false);
+            AnimationClip clipOn = AnimationClipUtil.ToggleCreate(folderPath, paths, toggleParameterName, true);
+            AnimationClip clipOff = AnimationClipUtil.ToggleCreate(folderPath, paths, toggleParameterName, false);
             var stateOn = AnimatorStateUtil.ToggleCreate(assetPath, clipOn, true);
             var stateOff = AnimatorStateUtil.ToggleCreate(assetPath, clipOff, false);
             var stateMachine = AnimatorStateMachineUtil.ToggleCreate(assetPath, stateOn, stateOff, toggleParameterName);
             AnimatorStateUtil.ToggleLink(assetPath, stateOn, stateOff, parameterName);
             var toggleLayer = CreateToggleLayer(stateMachine, toggleMenuName);
-            
+
             targetAnimatorController.AddLayer(toggleLayer);
             targetAnimatorController.TryAddParameter(CreateToggleParameters(toggleParameterName));
-            
+
             EditorUtility.SetDirty(targetAnimatorController);
         }
 

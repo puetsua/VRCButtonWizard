@@ -9,7 +9,7 @@
             baseWindowLabelAnimator = "Animator",
             baseWindowLabelVrcTargetMenu = "Target Menu",
             baseWindowLabelVrcParameters = "Parameters",
-            baseWindowLabelTargetObject = "Toggle Object",
+            baseWindowLabelTargetObject = "Toggle Objects",
             baseWindowLabelMenuName = "Control Name",
             baseWindowLabelParameterName = "Parameter Name",
             baseWindowLabelSaveParameter = "Save Parameter",

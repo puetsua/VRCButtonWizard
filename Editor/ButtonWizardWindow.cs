@@ -47,10 +47,10 @@ namespace Puetsua.VRCButtonWizard.Editor
             }
             else
             {
-                ShowTargetObjectField();
                 ShowMenuNameField();
                 ShowParameterSaveField();
                 ShowParameterDefaultField();
+                ShowTargetObjectsField();
                 ShowCreateToggleButton();
             }
 

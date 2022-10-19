@@ -6,7 +6,7 @@ namespace Puetsua.VRCButtonWizard.Editor
 {
     public class AdvancedButtonWizardWindow : ButtonWizardWindowBase
     {
-        private bool settingFoldout;
+        private bool _settingFoldout;
 
         private void CreateGUI()
         {
@@ -36,27 +36,27 @@ namespace Puetsua.VRCButtonWizard.Editor
             }
             else
             {
-                ShowAnimatorField();
-                ShowTargetObjectField();
-
                 GUILayout.BeginVertical(ButtonWizardStyles.MultipleFields);
                 ShowVrcTargetMenuField();
                 vrcTargetMenu = EditorGUILayout.ObjectField(" ", vrcTargetMenu,
                     typeof(VRCExpressionsMenu), false) as VRCExpressionsMenu;
                 GUILayout.EndVertical();
-
                 ShowMenuNameField();
                 ShowVrcParameterField();
                 ShowParameterNameField();
                 ShowParameterSaveField();
                 ShowParameterDefaultField();
+                
+                ShowAnimatorField();
+                ShowTargetObjectsField();
+
                 ShowCreateToggleButton();
             }
 
             GUILayout.EndVertical();
 
-            settingFoldout = EditorGUILayout.Foldout(settingFoldout, Localized.settingWindowLabelTitle);
-            if (settingFoldout)
+            _settingFoldout = EditorGUILayout.Foldout(_settingFoldout, Localized.settingWindowLabelTitle);
+            if (_settingFoldout)
             {
                 ShowLanguageOption();
             }

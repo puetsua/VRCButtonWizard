@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 using VRC.SDK3.Avatars.Components;
@@ -53,7 +54,7 @@ namespace Puetsua.VRCButtonWizard.Editor
         {
             return AssetPathPopup(new GUIContent(label), path);
         }
-        
+
         internal static VRCExpressionsMenu VrcMenuPopup(GUIContent label, VRCExpressionsMenu rootMenu,
             VRCExpressionsMenu menu)
         {
@@ -95,6 +96,37 @@ namespace Puetsua.VRCButtonWizard.Editor
             {
                 Application.OpenURL(url);
             }
+        }
+
+        internal static List<T> CheckDragAndDrop<T>()
+            where T : Object
+        {
+            return CheckDragAndDrop<T>(GUILayoutUtility.GetLastRect());
+        }
+        
+        internal static List<T> CheckDragAndDrop<T>(Rect area)
+            where T : Object
+        {
+            Event evt = Event.current;
+            var list = new List<T>();
+
+            if (evt.type == EventType.DragUpdated && 
+                area.Contains(evt.mousePosition))
+            {
+                DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
+            }
+            else if (evt.type == EventType.DragPerform && 
+                     area.Contains(evt.mousePosition))
+            {
+                DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
+                DragAndDrop.AcceptDrag();
+                foreach (var obj in DragAndDrop.objectReferences)
+                {
+                    if (obj is T tObj) list.Add(tObj);
+                }
+            }
+
+            return list;
         }
     }
 }
