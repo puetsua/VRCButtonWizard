@@ -221,13 +221,15 @@ namespace Puetsua.VRCButtonWizard.Editor
                 foreach (var gobj in gobjs)
                 {
                     if (!targetObjects.Contains(gobj))
+                    {
                         targetObjects.Add(gobj);
+                        GUI.changed = true;
+                    }
                 }
             }
 
             if (EditorGUI.EndChangeCheck() && targetAnimatorController != null)
             {
-                // targetObjects.CleanUpNullObjects();
                 if (targetObjects.Count > 0)
                     SetupTargetObjectSetting(targetObjects[0]);
                 onChange?.Invoke();
@@ -242,6 +244,7 @@ namespace Puetsua.VRCButtonWizard.Editor
                 if (isMinusClicked)
                 {
                     targetObjects[i] = null;
+                    GUI.changed = true;
                 }
             }
 
