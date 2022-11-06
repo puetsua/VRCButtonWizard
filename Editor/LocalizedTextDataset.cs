@@ -18,8 +18,7 @@ namespace Puetsua.VRCButtonWizard.Editor
 
         static LocalizedTextDataset()
         {
-            var selectedLanguage = (SupportedLanguage) EditorPrefs.GetInt(
-                EditorPrefConst.Language, (int) SupportedLanguage.English);
+            var selectedLanguage = ButtonWizardPref.Language;
             SetLanguage(selectedLanguage);
         }
 
@@ -47,6 +46,8 @@ namespace Puetsua.VRCButtonWizard.Editor
             // -- Messages
             baseWindowMsgNoAvatar,
             baseWindowMsgObjectNotUnderAvatar,
+            // -- WindowMenu
+            baseWindowMenuToggleAlwaysAdvanced,
 
             // Button Wizard
             buttonWizardWindowName,
@@ -59,6 +60,7 @@ namespace Puetsua.VRCButtonWizard.Editor
             advancedButtonWizardWindowTitle,
             advancedButtonWizardWindowLabelSaveLocation,
             advancedButtonWizardWindowLabelTooltipSaveLocation,
+            advancedButtonWizardWindowMenuSimple,
 
             // Setting
             settingWindowLabelTitle,

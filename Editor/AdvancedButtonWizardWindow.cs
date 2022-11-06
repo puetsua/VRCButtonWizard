@@ -4,9 +4,25 @@ using VRC.SDK3.Avatars.ScriptableObjects;
 
 namespace Puetsua.VRCButtonWizard.Editor
 {
-    public class AdvancedButtonWizardWindow : ButtonWizardWindowBase
+    public class AdvancedButtonWizardWindow : ButtonWizardWindowBase, IHasCustomMenu
     {
         private bool _settingFoldout;
+
+        public static void OpenWindow()
+        {
+            var wnd = GetWindow<AdvancedButtonWizardWindow>(Localized.advancedButtonWizardWindowName);
+            wnd.position = WindowPos;
+            wnd.minSize = MinWindowSize;
+            wnd.maxSize = MaxWindowSize;
+        }
+
+        void IHasCustomMenu.AddItemsToMenu(GenericMenu menu)
+        {
+            menu.AddItem(new GUIContent(Localized.baseWindowMenuToggleAlwaysAdvanced),
+                ButtonWizardPref.AlwaysAdvanced, ToggleAlwaysAdvanced);
+            menu.AddItem(new GUIContent(Localized.advancedButtonWizardWindowMenuSimple),
+                false, ButtonWizardWindow.OpenWindow);
+        }
 
         private void CreateGUI()
         {
@@ -46,7 +62,7 @@ namespace Puetsua.VRCButtonWizard.Editor
                 ShowParameterNameField();
                 ShowParameterSaveField();
                 ShowParameterDefaultField();
-                
+
                 ShowAnimatorField();
                 ShowTargetObjectsField();
 
@@ -59,6 +75,7 @@ namespace Puetsua.VRCButtonWizard.Editor
             if (_settingFoldout)
             {
                 ShowLanguageOption();
+                ShowAlwaysAdvancedOption();
             }
 
             GUILayout.FlexibleSpace();
@@ -68,6 +85,12 @@ namespace Puetsua.VRCButtonWizard.Editor
         private void OnSaveLocationChanged()
         {
             SaveFolderPath();
+        }
+
+        private void ShowAlwaysAdvancedOption()
+        {
+            ButtonWizardPref.AlwaysAdvanced = EditorGUILayout.Toggle(Localized.baseWindowMenuToggleAlwaysAdvanced,
+                ButtonWizardPref.AlwaysAdvanced);
         }
     }
 }

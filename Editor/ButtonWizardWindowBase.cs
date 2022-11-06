@@ -30,10 +30,14 @@ namespace Puetsua.VRCButtonWizard.Editor
 
         protected VRCExpressionsMenu VrcRootMenu => avatar == null ? null : avatar.expressionsMenu;
 
+        protected static void ToggleAlwaysAdvanced()
+        {
+            ButtonWizardPref.AlwaysAdvanced = !ButtonWizardPref.AlwaysAdvanced;
+        }
+
         protected void ShowLanguageOption()
         {
-            var selectedLanguage = (SupportedLanguage) EditorPrefs.GetInt(
-                EditorPrefConst.Language, (int) SupportedLanguage.English);
+            var selectedLanguage = ButtonWizardPref.Language;
 
             EditorGUI.BeginChangeCheck();
             selectedLanguage = (SupportedLanguage) EditorGUILayout.EnumPopup(
@@ -41,19 +45,19 @@ namespace Puetsua.VRCButtonWizard.Editor
             if (EditorGUI.EndChangeCheck())
             {
                 LocalizedTextDataset.SetLanguage(selectedLanguage);
-                EditorPrefs.SetInt(EditorPrefConst.Language, (int) selectedLanguage);
+                ButtonWizardPref.Language = selectedLanguage;
             }
         }
 
         protected void LoadFolderPath()
         {
-            folderPath = EditorPrefs.GetString(EditorPrefConst.SavePath);
+            folderPath = ButtonWizardPref.SavePath;
             if (debug) Debug.Log($"Save Path loaded: {folderPath}");
         }
 
         protected void SaveFolderPath()
         {
-            EditorPrefs.SetString(EditorPrefConst.SavePath, folderPath);
+            ButtonWizardPref.SavePath = folderPath;
             if (debug) Debug.Log($"Save Path saved: {folderPath}");
         }
 
@@ -205,7 +209,7 @@ namespace Puetsua.VRCButtonWizard.Editor
 
             if (targetObjects.Count == 0)
             {
-                EditorGUILayout.LabelField("[Drop Objects Here]",GUILayout.MinHeight(100));
+                EditorGUILayout.LabelField("[Drop Objects Here]", GUILayout.MinHeight(100));
             }
             else
             {

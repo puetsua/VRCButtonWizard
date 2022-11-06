@@ -7,7 +7,19 @@ namespace Puetsua.VRCButtonWizard.Editor
     public class ButtonWizardWindow : ButtonWizardWindowBase, IHasCustomMenu
     {
         [MenuItem("Tools/VRChat Button Wizard", false, ButtonWizardConst.MenuItemPriority)]
-        private static void OpenWindow()
+        public static void OpenPreferredWindow()
+        {
+            if (ButtonWizardPref.AlwaysAdvanced)
+            {
+                AdvancedButtonWizardWindow.OpenWindow();
+            }
+            else
+            {
+                OpenWindow();
+            }
+        }
+
+        public static void OpenWindow()
         {
             var wnd = GetWindow<ButtonWizardWindow>(Localized.buttonWizardWindowName);
             wnd.position = WindowPos;
@@ -15,17 +27,12 @@ namespace Puetsua.VRCButtonWizard.Editor
             wnd.maxSize = MaxWindowSize;
         }
 
-        private static void OpenAdvanceWindow()
-        {
-            var wnd = GetWindow<AdvancedButtonWizardWindow>(Localized.advancedButtonWizardWindowName);
-            wnd.position = WindowPos;
-            wnd.minSize = MinWindowSize;
-            wnd.maxSize = MaxWindowSize;
-        }
-
         void IHasCustomMenu.AddItemsToMenu(GenericMenu menu)
         {
-            menu.AddItem(new GUIContent(Localized.buttonWizardWindowMenuAdvanced), false, OpenAdvanceWindow);
+            menu.AddItem(new GUIContent(Localized.baseWindowMenuToggleAlwaysAdvanced),
+                ButtonWizardPref.AlwaysAdvanced, ToggleAlwaysAdvanced);
+            menu.AddItem(new GUIContent(Localized.buttonWizardWindowMenuAdvanced),
+                false, AdvancedButtonWizardWindow.OpenWindow);
         }
 
         private void CreateGUI()

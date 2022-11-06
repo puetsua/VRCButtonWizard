@@ -28,6 +28,8 @@
             // -- Messages
             baseWindowMsgNoAvatar = "Drag your avatar in the field to start adding toggles.",
             baseWindowMsgObjectNotUnderAvatar = "Target Object is not under avatar.",
+            // -- WindowMenu
+            baseWindowMenuToggleAlwaysAdvanced = "Always use advanced",
 
             // Button Wizard
             buttonWizardWindowName = "Button Wizard",
@@ -40,6 +42,7 @@
             advancedButtonWizardWindowTitle = "VRChat Advanced Button Wizard",
             advancedButtonWizardWindowLabelSaveLocation = "Save Location",
             advancedButtonWizardWindowLabelTooltipSaveLocation = "Save Location for AnimationClip asset.",
+            advancedButtonWizardWindowMenuSimple = "Open Regular Button Wizard",
 
             // Setting
             settingWindowLabelTitle = "Settings",
@@ -71,6 +74,8 @@
             // -- Messages
             baseWindowMsgNoAvatar = "將角色(Avatar)代入開始建立開關。",
             baseWindowMsgObjectNotUnderAvatar = "開關物件不在角色物件底下。",
+            // -- WindowMenu
+            baseWindowMenuToggleAlwaysAdvanced = "預設使用進階版",
 
             // Button Wizard
             buttonWizardWindowName = "開關精靈",
@@ -83,6 +88,7 @@
             advancedButtonWizardWindowTitle = "VRChat 進階版開關精靈",
             advancedButtonWizardWindowLabelSaveLocation = "儲存位置",
             advancedButtonWizardWindowLabelTooltipSaveLocation = "動畫檔的儲存位置",
+            advancedButtonWizardWindowMenuSimple = "開啟一般版開關精靈",
 
             // Setting
             settingWindowLabelTitle = "設定",
