@@ -164,7 +164,7 @@ namespace Puetsua.VRCButtonWizard.Editor
 
             if (targetProperties.Count == 0)
             {
-                GUILayout.Label("[Drop Objects Here]", ButtonWizardStyles.LabelCenter, GUILayout.MinHeight(100));
+                GUILayout.Label(Localized.baseWindowTipDropObjectsHere, ButtonWizardStyles.LabelCenter, GUILayout.MinHeight(100));
             }
             else
             {

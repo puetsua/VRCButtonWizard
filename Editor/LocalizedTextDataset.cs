@@ -34,6 +34,7 @@ namespace Puetsua.VRCButtonWizard.Editor
             baseWindowLabelSaveParameter,
             baseWindowLabelDefaultValue,
             baseWindowButtonCreateToggle,
+            baseWindowTipDropObjectsHere,
             // -- Tooltip
             baseWindowTooltipAvatar,
             baseWindowTooltipAnimator,

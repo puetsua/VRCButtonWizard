@@ -15,6 +15,7 @@
             baseWindowLabelSaveParameter = "Save Parameter",
             baseWindowLabelDefaultValue = "Default Value",
             baseWindowButtonCreateToggle = "Create Toggle",
+            baseWindowTipDropObjectsHere = "[Drop Objects Here]",
             // -- Tooltip
             baseWindowTooltipAvatar = "VRChat Avatar with VRCAvatarDescriptor component.",
             baseWindowTooltipAnimator = "Usually the animator under FX layer.",
@@ -65,6 +66,7 @@
             baseWindowLabelSaveParameter = "儲存參數",
             baseWindowLabelDefaultValue = "預設值",
             baseWindowButtonCreateToggle = "建立開關",
+            baseWindowTipDropObjectsHere = "[拖曳物件至此]",
             // -- Tooltip
             baseWindowTooltipAvatar = "帶有VRCAvatarDescriptor元件的角色(Avatar)物件。",
             baseWindowTooltipAnimator = "Animator，通常是FX動畫層的動畫器。",
