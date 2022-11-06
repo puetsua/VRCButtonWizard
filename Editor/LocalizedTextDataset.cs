@@ -33,6 +33,7 @@ namespace Puetsua.VRCButtonWizard.Editor
             baseWindowLabelParameterName,
             baseWindowLabelSaveParameter,
             baseWindowLabelDefaultValue,
+            baseWindowButtonCreateToggle,
             // -- Tooltip
             baseWindowTooltipAvatar,
             baseWindowTooltipAnimator,
@@ -61,6 +62,8 @@ namespace Puetsua.VRCButtonWizard.Editor
             advancedButtonWizardWindowLabelSaveLocation,
             advancedButtonWizardWindowLabelTooltipSaveLocation,
             advancedButtonWizardWindowMenuSimple,
+            advancedButtonWizardWindowButtonCreateVrcToggle,
+            advancedButtonWizardWindowButtonCreateAnimationClips,
 
             // Setting
             settingWindowLabelTitle,

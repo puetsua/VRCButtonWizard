@@ -1,13 +1,15 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Puetsua.VRCButtonWizard.Editor
 {
     internal static class AnimationClipUtil
     {
-        internal static AnimationClip ToggleCreate(string assetFolderPath, string[] hierarchyPaths, string animName,
-            bool isOn)
+        internal static AnimationClip ToggleCreate(string assetFolderPath, ToggleProperty[] properties,
+            string animName, bool isOn)
         {
             var clipName = isOn
                 ? $"{animName}On"
@@ -22,23 +24,26 @@ namespace Puetsua.VRCButtonWizard.Editor
                 return asset;
             }
 
-            if (guids.Length > 1)
-            {
-                Debug.LogError("Multiple AnimationClips with same name?!");
-                return null;
-            }
-
             var clip = new AnimationClip
             {
                 name = clipName,
                 frameRate = 60,
             };
 
-            var curve = AnimationCurve.Constant(0, 0, isOn ? 1 : 0);
-            foreach (var hierarchyPath in hierarchyPaths)
+            foreach (var property in properties)
             {
-                clip.SetCurve(hierarchyPath, typeof(GameObject), PropertyNameConst.IsActive, curve);
+                if (property.binding.isPPtrCurve)
+                {
+                    AnimationUtility.SetObjectReferenceCurve(clip, property.binding,
+                        new[] {ToObjectReferenceKeyframe(property, isOn)});
+                }
+                else
+                {
+                    AnimationUtility.SetEditorCurve(clip, property.binding,
+                        ToAnimationCurve(property, isOn));
+                }
             }
+
             AnimationUtility.SetAnimationClipSettings(clip, new AnimationClipSettings
             {
                 loopTime = true,
@@ -47,6 +52,41 @@ namespace Puetsua.VRCButtonWizard.Editor
             var fileName = $"{clipName}.anim";
             AssetDatabase.CreateAsset(clip, Path.Combine(assetFolderPath, fileName));
             return clip;
+        }
+
+        private static AnimationCurve ToAnimationCurve(ToggleProperty property, bool isOn)
+        {
+            var rawValue = isOn ? property.valueOn : property.valueOff;
+            float value = 0;
+
+            if (rawValue is bool boolValue)
+            {
+                value = boolValue ? 1 : 0;
+            }
+            else if (rawValue is int intValue)
+            {
+                value = intValue;
+            }
+            else if (rawValue is float floatValue)
+            {
+                value = floatValue;
+            }
+            else
+            {
+                throw new ArgumentException($"Unhandled type: {value.GetType().Name}");
+            }
+
+            return AnimationCurve.Constant(0, 0, value);
+        }
+
+        private static ObjectReferenceKeyframe ToObjectReferenceKeyframe(ToggleProperty property, bool isOn)
+        {
+            var value = isOn ? property.valueOn : property.valueOff;
+            return new ObjectReferenceKeyframe
+            {
+                time = 0,
+                value = (Object) value
+            };
         }
     }
 }

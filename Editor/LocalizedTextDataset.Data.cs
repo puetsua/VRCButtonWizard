@@ -14,6 +14,7 @@
             baseWindowLabelParameterName = "Parameter Name",
             baseWindowLabelSaveParameter = "Save Parameter",
             baseWindowLabelDefaultValue = "Default Value",
+            baseWindowButtonCreateToggle = "Create Toggle",
             // -- Tooltip
             baseWindowTooltipAvatar = "VRChat Avatar with VRCAvatarDescriptor component.",
             baseWindowTooltipAnimator = "Usually the animator under FX layer.",
@@ -43,6 +44,8 @@
             advancedButtonWizardWindowLabelSaveLocation = "Save Location",
             advancedButtonWizardWindowLabelTooltipSaveLocation = "Save Location for AnimationClip asset.",
             advancedButtonWizardWindowMenuSimple = "Open Regular Button Wizard",
+            advancedButtonWizardWindowButtonCreateVrcToggle = "Create VRC Toggle Only",
+            advancedButtonWizardWindowButtonCreateAnimationClips = "Create AnimationClips only",
 
             // Setting
             settingWindowLabelTitle = "Settings",
@@ -61,6 +64,7 @@
             baseWindowLabelParameterName = "參數名稱",
             baseWindowLabelSaveParameter = "儲存參數",
             baseWindowLabelDefaultValue = "預設值",
+            baseWindowButtonCreateToggle = "建立開關",
             // -- Tooltip
             baseWindowTooltipAvatar = "帶有VRCAvatarDescriptor元件的角色(Avatar)物件。",
             baseWindowTooltipAnimator = "Animator，通常是FX動畫層的動畫器。",
@@ -89,6 +93,8 @@
             advancedButtonWizardWindowLabelSaveLocation = "儲存位置",
             advancedButtonWizardWindowLabelTooltipSaveLocation = "動畫檔的儲存位置",
             advancedButtonWizardWindowMenuSimple = "開啟一般版開關精靈",
+            advancedButtonWizardWindowButtonCreateVrcToggle = "只建立VRC開關",
+            advancedButtonWizardWindowButtonCreateAnimationClips = "只建立動畫檔(AnimationClip)",
 
             // Setting
             settingWindowLabelTitle = "設定",

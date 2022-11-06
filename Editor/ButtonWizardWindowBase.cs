@@ -12,6 +12,7 @@ namespace Puetsua.VRCButtonWizard.Editor
     public class ButtonWizardWindowBase : EditorWindow
     {
         public static bool debug = false;
+
         protected static readonly Rect WindowPos = new Rect(200, 200, 400, 600);
         protected static readonly Vector2 MinWindowSize = new Vector2(450, 200);
         protected static readonly Vector2 MaxWindowSize = new Vector2(1280, 720);
@@ -19,7 +20,7 @@ namespace Puetsua.VRCButtonWizard.Editor
 
         protected VRCAvatarDescriptor avatar;
         protected AnimatorController targetAnimatorController;
-        protected List<GameObject> targetObjects = new List<GameObject>();
+        protected List<ToggleProperty> targetProperties = new List<ToggleProperty>();
         protected VRCExpressionParameters vrcParameters;
         protected VRCExpressionsMenu vrcTargetMenu;
         protected string menuName;
@@ -103,7 +104,7 @@ namespace Puetsua.VRCButtonWizard.Editor
                 targetAnimatorController = GetAnimatorController(avatarDesc);
             }
 
-            targetObjects.Clear();
+            targetProperties.Clear();
             vrcParameters = avatarDesc.expressionParameters;
             vrcTargetMenu = avatarDesc.expressionsMenu;
         }
@@ -111,50 +112,6 @@ namespace Puetsua.VRCButtonWizard.Editor
         private static AnimatorController GetAnimatorController(VRCAvatarDescriptor avatar)
         {
             return avatar.baseAnimationLayers[4].animatorController as AnimatorController;
-        }
-
-        protected void ShowCreateToggleButton()
-        {
-            bool areTargetObjectValid = true;
-            if (targetObjects.Count > 0)
-            {
-                if (!AreTargetObjectsHierarchyValid())
-                {
-                    EditorGUILayout.HelpBox(Localized.baseWindowMsgObjectNotUnderAvatar, MessageType.Error);
-                    areTargetObjectValid = false;
-                }
-            }
-            else
-            {
-                areTargetObjectValid = false;
-            }
-
-            GUI.enabled = !string.IsNullOrWhiteSpace(menuName) &&
-                          !string.IsNullOrWhiteSpace(parameterName) &&
-                          areTargetObjectValid;
-            if (GUILayout.Button("Create Toggle"))
-            {
-                CreateVrcToggle(menuName, parameterName, isParamSaved, defaultBool);
-                CreateToggle(menuName, parameterName);
-                AssetDatabase.SaveAssets();
-            }
-
-            GUI.enabled = true;
-        }
-
-        private bool AreTargetObjectsHierarchyValid()
-        {
-            foreach (var targetObject in targetObjects)
-            {
-                if (targetObject == null)
-                    continue;
-                if (!targetObject.transform.IsChildOf(avatar.transform))
-                {
-                    return false;
-                }
-            }
-
-            return true;
         }
 
         protected void ShowAnimatorField()
@@ -196,87 +153,93 @@ namespace Puetsua.VRCButtonWizard.Editor
         {
             EditorGUI.BeginChangeCheck();
 
-            EditorGUILayout.BeginHorizontal(ButtonWizardStyles.MultipleFields);
-
             var label = new GUIContent
             {
                 text = Localized.baseWindowLabelTargetObject,
                 tooltip = Localized.baseWindowTooltipTargetObject
             };
 
-            EditorGUILayout.PrefixLabel(label);
-            EditorGUILayout.BeginVertical(GUILayout.MinHeight(100));
+            EditorGUILayout.BeginVertical(ButtonWizardStyles.MultipleFields, GUILayout.MinHeight(100));
+            EditorGUILayout.LabelField(label);
 
-            if (targetObjects.Count == 0)
+            if (targetProperties.Count == 0)
             {
-                EditorGUILayout.LabelField("[Drop Objects Here]", GUILayout.MinHeight(100));
+                GUILayout.Label("[Drop Objects Here]", ButtonWizardStyles.LabelCenter, GUILayout.MinHeight(100));
             }
             else
             {
-                ShowTargetObjects();
+                ShowTargetProperties();
             }
 
             EditorGUILayout.EndVertical();
-            EditorGUILayout.EndHorizontal();
 
             var gobjs = PtEditorGUILayout.CheckDragAndDrop<GameObject>();
             if (gobjs.Count > 0)
             {
                 foreach (var gobj in gobjs)
                 {
-                    if (!targetObjects.Contains(gobj))
-                    {
-                        targetObjects.Add(gobj);
-                        GUI.changed = true;
-                    }
+                    TryToAddTargetProperty(gobj);
                 }
             }
 
             if (EditorGUI.EndChangeCheck() && targetAnimatorController != null)
             {
-                if (targetObjects.Count > 0)
-                    SetupTargetObjectSetting(targetObjects[0]);
+                if (targetProperties.Count > 0)
+                    SetupTargetObjectSetting(targetProperties[0]);
                 onChange?.Invoke();
             }
         }
 
-        private void ShowTargetObjects()
+        private void TryToAddTargetProperty(GameObject gobj)
         {
-            for (int i = 0; i < targetObjects.Count; i++)
+            var property = new ToggleProperty(gobj, avatar.gameObject);
+            targetProperties.Add(property);
+            GUI.changed = true;
+        }
+
+        private void ShowTargetProperties()
+        {
+            for (int i = 0; i < targetProperties.Count; i++)
             {
-                targetObjects[i] = ShowTargetObject(targetObjects[i], out bool isMinusClicked);
+                targetProperties[i] = ShowTargetProperty(targetProperties[i], out bool isMinusClicked);
                 if (isMinusClicked)
                 {
-                    targetObjects[i] = null;
+                    targetProperties[i] = null;
                     GUI.changed = true;
                 }
             }
 
-            targetObjects.RemoveAll(x => x == null);
+            targetProperties.RemoveAll(x => x == null);
         }
 
-        private GameObject ShowTargetObject(GameObject target, out bool isMinusClicked)
+        private ToggleProperty ShowTargetProperty(ToggleProperty target, out bool isMinusClicked)
         {
             EditorGUILayout.BeginHorizontal();
-            target = EditorGUILayout.ObjectField(target, typeof(GameObject), true) as GameObject;
+            target = AnimatedPropertyField(target);
             isMinusClicked = GUILayout.Button(EditorGUIUtility.IconContent("Toolbar Minus"), GUILayout.Width(30));
             EditorGUILayout.EndHorizontal();
             return target;
         }
 
-        private void SetupTargetObjectSetting(GameObject target)
+        protected virtual ToggleProperty AnimatedPropertyField(ToggleProperty target)
+        {
+            EditorGUILayout.ObjectField(target.gameObject, typeof(GameObject), true);
+            return target;
+        }
+
+        private void SetupTargetObjectSetting(ToggleProperty target)
         {
             if (target == null)
                 return;
 
             if (string.IsNullOrWhiteSpace(menuName))
             {
-                menuName = target.name;
+                menuName = target.binding.path;
             }
 
             if (string.IsNullOrWhiteSpace(parameterName))
             {
-                parameterName = target.name;
+                parameterName = target.binding.path;
             }
         }
 
@@ -324,7 +287,17 @@ namespace Puetsua.VRCButtonWizard.Editor
             defaultBool = EditorGUILayout.Toggle(label, defaultBool);
         }
 
-        private void CreateToggle(string toggleMenuName, string toggleParameterName)
+        protected void CreateToggleClipsOnly(string toggleMenuName, string toggleParameterName)
+        {
+            CreateFolderIfNotExist(folderPath);
+
+            var properties = targetProperties.ToArray();
+
+            AnimationClipUtil.ToggleCreate(folderPath, properties, toggleParameterName, true);
+            AnimationClipUtil.ToggleCreate(folderPath, properties, toggleParameterName, false);
+        }
+
+        protected void CreateToggle(string toggleMenuName, string toggleParameterName)
         {
             if (targetAnimatorController == null)
             {
@@ -334,15 +307,11 @@ namespace Puetsua.VRCButtonWizard.Editor
 
             CreateFolderIfNotExist(folderPath);
 
-            var paths = new string[targetObjects.Count];
-            for (int i = 0; i < targetObjects.Count; i++)
-            {
-                paths[i] = targetObjects[i].transform.GetHierarchyPath(avatar.transform);
-            }
+            var properties = targetProperties.ToArray();
 
             var assetPath = AssetDatabase.GetAssetPath(targetAnimatorController);
-            AnimationClip clipOn = AnimationClipUtil.ToggleCreate(folderPath, paths, toggleParameterName, true);
-            AnimationClip clipOff = AnimationClipUtil.ToggleCreate(folderPath, paths, toggleParameterName, false);
+            AnimationClip clipOn = AnimationClipUtil.ToggleCreate(folderPath, properties, toggleParameterName, true);
+            AnimationClip clipOff = AnimationClipUtil.ToggleCreate(folderPath, properties, toggleParameterName, false);
             var stateOn = AnimatorStateUtil.ToggleCreate(assetPath, clipOn, true);
             var stateOff = AnimatorStateUtil.ToggleCreate(assetPath, clipOff, false);
             var stateMachine = AnimatorStateMachineUtil.ToggleCreate(assetPath, stateOn, stateOff, toggleParameterName);
@@ -376,7 +345,8 @@ namespace Puetsua.VRCButtonWizard.Editor
             };
         }
 
-        private void CreateVrcToggle(string toggleMenuName, string toggleParameterName, bool isSaved, bool defaultValue)
+        protected void CreateVrcToggle(string toggleMenuName, string toggleParameterName, bool isSaved,
+            bool defaultValue)
         {
             if (vrcParameters == null)
             {

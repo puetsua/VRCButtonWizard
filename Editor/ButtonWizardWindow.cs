@@ -89,5 +89,22 @@ namespace Puetsua.VRCButtonWizard.Editor
             folderPath = path;
             Debug.Log($"Planned to save generated AnimationClip to '{path}'");
         }
+
+        private void ShowCreateToggleButton()
+        {
+            bool areTargetObjectValid = targetProperties.Count > 0;
+
+            GUI.enabled = !string.IsNullOrWhiteSpace(menuName) &&
+                          !string.IsNullOrWhiteSpace(parameterName) &&
+                          areTargetObjectValid;
+            if (GUILayout.Button(Localized.baseWindowButtonCreateToggle))
+            {
+                CreateVrcToggle(menuName, parameterName, isParamSaved, defaultBool);
+                CreateToggle(menuName, parameterName);
+                AssetDatabase.SaveAssets();
+            }
+
+            GUI.enabled = true;
+        }
     }
 }
