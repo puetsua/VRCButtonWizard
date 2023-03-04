@@ -32,6 +32,7 @@ namespace Puetsua.VRCButtonWizard.Editor
             baseWindowLabelParameterName,
             baseWindowLabelSaveParameter,
             baseWindowLabelDefaultValue,
+            baseWindowLabelInvertToggle,
             baseWindowButtonCreateToggle,
             baseWindowTipDropObjectsHere,
             // -- Tooltip
@@ -44,6 +45,7 @@ namespace Puetsua.VRCButtonWizard.Editor
             baseWindowTooltipParameterName,
             baseWindowTooltipSaveParameter,
             baseWindowTooltipDefaultValue,
+            baseWindowTooltipInverseToggle,
             // -- Messages
             baseWindowMsgNoAvatar,
             baseWindowMsgObjectNotUnderAvatar,

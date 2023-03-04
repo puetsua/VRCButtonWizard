@@ -14,6 +14,7 @@
             baseWindowLabelParameterName = "Parameter Name",
             baseWindowLabelSaveParameter = "Save Parameter",
             baseWindowLabelDefaultValue = "Default Value",
+            baseWindowLabelInvertToggle = "Invert Toggle",
             baseWindowButtonCreateToggle = "Create Toggle",
             baseWindowTipDropObjectsHere = "[Drop Objects Here]",
             // -- Tooltip
@@ -27,6 +28,10 @@
             baseWindowTooltipSaveParameter = "This parameter should be saved or not when changing avatars.",
             baseWindowTooltipDefaultValue = "Default value for the parameter when " +
                                             "avatar is loaded if not saved, or performing avatar reset.",
+            baseWindowTooltipInverseToggle = "Invert the toggle. When toggle is on, target object will be hidden." +
+                                             "When you're loading the avatar, there is a small amount of time " +
+                                             "that other players will see your target object is hidden since every " +
+                                             "parameter are cleared to zero.",
             // -- Messages
             baseWindowMsgNoAvatar = "Drag your avatar in the field to start adding toggles.",
             baseWindowMsgObjectNotUnderAvatar = "Target Object is not under avatar.",
@@ -66,6 +71,7 @@
             baseWindowLabelParameterName = "參數名稱",
             baseWindowLabelSaveParameter = "儲存參數",
             baseWindowLabelDefaultValue = "預設值",
+            baseWindowLabelInvertToggle = "開關反向",
             baseWindowButtonCreateToggle = "建立開關",
             baseWindowTipDropObjectsHere = "[拖曳物件至此]",
             // -- Tooltip
@@ -78,6 +84,8 @@
             baseWindowTooltipParameterName = "VRC表情參數表內的變數名稱",
             baseWindowTooltipSaveParameter = "決定這個參數是否存檔，下次使用角色時會維持上個數值。",
             baseWindowTooltipDefaultValue = "變數的預設值，角色重置時或沒有存檔時會使用這個數值。",
+            baseWindowTooltipInverseToggle = "將開關反向，讓開啟變成隱藏物件而關閉會顯示物件。" +
+                                             "可避免VRC載入角色途中因為參數被設為0導致其他人看到的物件都是隱藏狀態。",
             // -- Messages
             baseWindowMsgNoAvatar = "將角色(Avatar)代入開始建立開關。",
             baseWindowMsgObjectNotUnderAvatar = "開關物件不在角色物件底下。",

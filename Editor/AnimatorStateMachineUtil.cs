@@ -8,7 +8,7 @@ namespace Puetsua.VRCButtonWizard.Editor
     internal static class AnimatorStateMachineUtil
     {
         internal static AnimatorStateMachine ToggleCreate(string parentAssetPath,
-            AnimatorState stateOn, AnimatorState stateOff, string name)
+            AnimatorState stateOff, AnimatorState stateOn, string name)
         {
             var stateMachine = new AnimatorStateMachine
             {

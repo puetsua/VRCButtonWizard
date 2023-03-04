@@ -63,6 +63,7 @@ namespace Puetsua.VRCButtonWizard.Editor
                 ShowParameterNameField();
                 ShowParameterSaveField();
                 ShowParameterDefaultField();
+                ShowInverseToggleField();
 
                 ShowAnimatorField();
                 ShowTargetObjectsField();

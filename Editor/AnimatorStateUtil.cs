@@ -7,11 +7,14 @@ namespace Puetsua.VRCButtonWizard.Editor
 {
     internal static class AnimatorStateUtil
     {
-        internal static AnimatorState ToggleCreate(string parentAssetPath, Motion motion, bool isOn)
+        private const string ToggleNameShow = "Show";
+        private const string ToggleNameHide = "Hide";
+
+        internal static AnimatorState ToggleCreate(string parentAssetPath, Motion motion, bool isShown)
         {
             var state = new AnimatorState
             {
-                name = isOn ? "On" : "Off",
+                name = isShown ? ToggleNameShow : ToggleNameHide,
                 hideFlags = HideFlags.HideInHierarchy,
                 motion = motion,
                 writeDefaultValues = true,
@@ -24,7 +27,7 @@ namespace Puetsua.VRCButtonWizard.Editor
         }
 
         internal static void ToggleLink(string parentAssetPath,
-            AnimatorState stateOn, AnimatorState stateOff, string parameterName)
+            AnimatorState stateOff, AnimatorState stateOn, string parameterName)
         {
             var transition = new AnimatorStateTransition
             {

@@ -28,6 +28,7 @@ namespace Puetsua.VRCButtonWizard.Editor
         protected string folderPath;
         protected bool isParamSaved;
         protected bool defaultBool;
+        protected bool invertToggle;
 
         protected VRCExpressionsMenu VrcRootMenu => avatar == null ? null : avatar.expressionsMenu;
 
@@ -164,7 +165,8 @@ namespace Puetsua.VRCButtonWizard.Editor
 
             if (targetProperties.Count == 0)
             {
-                GUILayout.Label(Localized.baseWindowTipDropObjectsHere, ButtonWizardStyles.LabelCenter, GUILayout.MinHeight(100));
+                GUILayout.Label(Localized.baseWindowTipDropObjectsHere, ButtonWizardStyles.LabelCenter,
+                    GUILayout.MinHeight(100));
             }
             else
             {
@@ -287,6 +289,17 @@ namespace Puetsua.VRCButtonWizard.Editor
             defaultBool = EditorGUILayout.Toggle(label, defaultBool);
         }
 
+        protected void ShowInverseToggleField()
+        {
+            var label = new GUIContent
+            {
+                text = Localized.baseWindowLabelInvertToggle,
+                tooltip = Localized.baseWindowTooltipInverseToggle
+            };
+
+            invertToggle = EditorGUILayout.Toggle(label, invertToggle);
+        }
+
         protected void CreateToggleClipsOnly(string toggleMenuName, string toggleParameterName)
         {
             CreateFolderIfNotExist(folderPath);
@@ -306,12 +319,14 @@ namespace Puetsua.VRCButtonWizard.Editor
             }
 
             CreateFolderIfNotExist(folderPath);
-            
+
             var assetPath = AssetDatabase.GetAssetPath(targetAnimatorController);
-            var stateOn = AnimatorStateUtil.ToggleCreate(assetPath, null, true);
-            var stateOff = AnimatorStateUtil.ToggleCreate(assetPath, null, false);
-            var stateMachine = AnimatorStateMachineUtil.ToggleCreate(assetPath, stateOn, stateOff, toggleParameterName);
-            AnimatorStateUtil.ToggleLink(assetPath, stateOn, stateOff, parameterName);
+            var isOff = invertToggle;
+            var isOn = !invertToggle;
+            var stateOff = AnimatorStateUtil.ToggleCreate(assetPath, null, isOff);
+            var stateOn = AnimatorStateUtil.ToggleCreate(assetPath, null, isOn);
+            var stateMachine = AnimatorStateMachineUtil.ToggleCreate(assetPath, stateOff, stateOn, toggleParameterName);
+            AnimatorStateUtil.ToggleLink(assetPath, stateOff, stateOn, parameterName);
             var toggleLayer = CreateToggleLayer(stateMachine, toggleMenuName);
 
             targetAnimatorController.AddLayer(toggleLayer);
@@ -333,12 +348,14 @@ namespace Puetsua.VRCButtonWizard.Editor
             var properties = targetProperties.ToArray();
 
             var assetPath = AssetDatabase.GetAssetPath(targetAnimatorController);
-            AnimationClip clipOn = AnimationClipUtil.ToggleCreate(folderPath, properties, toggleParameterName, true);
-            AnimationClip clipOff = AnimationClipUtil.ToggleCreate(folderPath, properties, toggleParameterName, false);
-            var stateOn = AnimatorStateUtil.ToggleCreate(assetPath, clipOn, true);
-            var stateOff = AnimatorStateUtil.ToggleCreate(assetPath, clipOff, false);
-            var stateMachine = AnimatorStateMachineUtil.ToggleCreate(assetPath, stateOn, stateOff, toggleParameterName);
-            AnimatorStateUtil.ToggleLink(assetPath, stateOn, stateOff, parameterName);
+            var isOff = invertToggle;
+            var isOn = !invertToggle;
+            AnimationClip clipOff = AnimationClipUtil.ToggleCreate(folderPath, properties, toggleParameterName, isOff);
+            AnimationClip clipOn = AnimationClipUtil.ToggleCreate(folderPath, properties, toggleParameterName, isOn);
+            var stateOff = AnimatorStateUtil.ToggleCreate(assetPath, clipOff, isOff);
+            var stateOn = AnimatorStateUtil.ToggleCreate(assetPath, clipOn, isOn);
+            var stateMachine = AnimatorStateMachineUtil.ToggleCreate(assetPath, stateOff, stateOn, toggleParameterName);
+            AnimatorStateUtil.ToggleLink(assetPath, stateOff, stateOn, parameterName);
             var toggleLayer = CreateToggleLayer(stateMachine, toggleMenuName);
 
             targetAnimatorController.AddLayer(toggleLayer);

@@ -8,12 +8,15 @@ namespace Puetsua.VRCButtonWizard.Editor
 {
     internal static class AnimationClipUtil
     {
+        private const string ClipNameSuffixShow = "Show";
+        private const string ClipNameSuffixHide = "Hide";
+        
         internal static AnimationClip ToggleCreate(string assetFolderPath, ToggleProperty[] properties,
-            string animName, bool isOn)
+            string animName, bool isShown)
         {
-            var clipName = isOn
-                ? $"{animName}On"
-                : $"{animName}Off";
+            var clipName = isShown
+                ? $"{animName}{ClipNameSuffixShow}"
+                : $"{animName}{ClipNameSuffixHide}";
 
             var guids = AssetDatabase.FindAssets($"t:AnimationClip {clipName}", new[] {assetFolderPath});
             if (guids.Length == 1)
@@ -35,12 +38,12 @@ namespace Puetsua.VRCButtonWizard.Editor
                 if (property.binding.isPPtrCurve)
                 {
                     AnimationUtility.SetObjectReferenceCurve(clip, property.binding,
-                        new[] {ToObjectReferenceKeyframe(property, isOn)});
+                        new[] {ToObjectReferenceKeyframe(property, isShown)});
                 }
                 else
                 {
                     AnimationUtility.SetEditorCurve(clip, property.binding,
-                        ToAnimationCurve(property, isOn));
+                        ToAnimationCurve(property, isShown));
                 }
             }
 
