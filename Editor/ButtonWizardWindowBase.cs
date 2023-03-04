@@ -297,11 +297,34 @@ namespace Puetsua.VRCButtonWizard.Editor
             AnimationClipUtil.ToggleCreate(folderPath, properties, toggleParameterName, false);
         }
 
+        protected void CreateToggleAnimatorLayerOnly(string toggleMenuName, string toggleParameterName)
+        {
+            if (targetAnimatorController == null)
+            {
+                Debug.LogAssertion(new NotImplementedException("Must assign an animator controller."));
+                return;
+            }
+
+            CreateFolderIfNotExist(folderPath);
+            
+            var assetPath = AssetDatabase.GetAssetPath(targetAnimatorController);
+            var stateOn = AnimatorStateUtil.ToggleCreate(assetPath, null, true);
+            var stateOff = AnimatorStateUtil.ToggleCreate(assetPath, null, false);
+            var stateMachine = AnimatorStateMachineUtil.ToggleCreate(assetPath, stateOn, stateOff, toggleParameterName);
+            AnimatorStateUtil.ToggleLink(assetPath, stateOn, stateOff, parameterName);
+            var toggleLayer = CreateToggleLayer(stateMachine, toggleMenuName);
+
+            targetAnimatorController.AddLayer(toggleLayer);
+            targetAnimatorController.TryAddParameter(CreateToggleParameters(toggleParameterName));
+
+            EditorUtility.SetDirty(targetAnimatorController);
+        }
+
         protected void CreateToggle(string toggleMenuName, string toggleParameterName)
         {
             if (targetAnimatorController == null)
             {
-                Debug.LogAssertion(new NotImplementedException());
+                Debug.LogAssertion(new NotImplementedException("Must assign an animator controller."));
                 return;
             }
 

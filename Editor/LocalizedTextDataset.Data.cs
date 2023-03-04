@@ -47,6 +47,7 @@
             advancedButtonWizardWindowMenuSimple = "Open Regular Button Wizard",
             advancedButtonWizardWindowButtonCreateVrcToggle = "Create VRC Toggle Only",
             advancedButtonWizardWindowButtonCreateAnimationClips = "Create AnimationClips only",
+            advancedButtonWizardWindowButtonCreateAnimatorControllerLayer = "Create AnimatorControllerLayer only",
 
             // Setting
             settingWindowLabelTitle = "Settings",
@@ -97,6 +98,7 @@
             advancedButtonWizardWindowMenuSimple = "開啟一般版開關精靈",
             advancedButtonWizardWindowButtonCreateVrcToggle = "只建立VRC開關",
             advancedButtonWizardWindowButtonCreateAnimationClips = "只建立動畫檔(AnimationClip)",
+            advancedButtonWizardWindowButtonCreateAnimatorControllerLayer = "只建立動畫層(AnimatorControllerLayer)",
 
             // Setting
             settingWindowLabelTitle = "設定",

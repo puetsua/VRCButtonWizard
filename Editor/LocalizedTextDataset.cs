@@ -1,5 +1,4 @@
 ﻿using System;
-using UnityEditor;
 using UnityEngine;
 
 namespace Puetsua.VRCButtonWizard.Editor
@@ -65,6 +64,7 @@ namespace Puetsua.VRCButtonWizard.Editor
             advancedButtonWizardWindowMenuSimple,
             advancedButtonWizardWindowButtonCreateVrcToggle,
             advancedButtonWizardWindowButtonCreateAnimationClips,
+            advancedButtonWizardWindowButtonCreateAnimatorControllerLayer,
 
             // Setting
             settingWindowLabelTitle,

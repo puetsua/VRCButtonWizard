@@ -129,14 +129,24 @@ namespace Puetsua.VRCButtonWizard.Editor
             bool areTargetObjectValid = targetProperties.Count > 0;
 
             GUI.enabled = !string.IsNullOrWhiteSpace(menuName) &&
-                          !string.IsNullOrWhiteSpace(parameterName) &&
-                          areTargetObjectValid;
+                          !string.IsNullOrWhiteSpace(parameterName);
 
             if (GUILayout.Button(Localized.advancedButtonWizardWindowButtonCreateVrcToggle))
             {
                 CreateVrcToggle(menuName, parameterName, isParamSaved, defaultBool);
                 AssetDatabase.SaveAssets();
             }
+
+            if (GUILayout.Button(Localized.advancedButtonWizardWindowButtonCreateAnimatorControllerLayer))
+            {
+                CreateToggleAnimatorLayerOnly(menuName, parameterName);
+                AssetDatabase.SaveAssets();
+            }
+
+            GUI.enabled = true;
+            GUI.enabled = !string.IsNullOrWhiteSpace(menuName) &&
+                          !string.IsNullOrWhiteSpace(parameterName) &&
+                          areTargetObjectValid;
 
             if (GUILayout.Button(Localized.advancedButtonWizardWindowButtonCreateAnimationClips))
             {
