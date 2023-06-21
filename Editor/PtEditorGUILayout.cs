@@ -50,11 +50,6 @@ namespace Puetsua.VRCButtonWizard.Editor
             return path;
         }
 
-        internal static string VrcMenuPopup(string label, string path)
-        {
-            return AssetPathPopup(new GUIContent(label), path);
-        }
-
         internal static VRCExpressionsMenu VrcMenuPopup(GUIContent label, VRCExpressionsMenu rootMenu,
             VRCExpressionsMenu menu)
         {
@@ -103,19 +98,19 @@ namespace Puetsua.VRCButtonWizard.Editor
         {
             return CheckDragAndDrop<T>(GUILayoutUtility.GetLastRect());
         }
-        
+
         internal static List<T> CheckDragAndDrop<T>(Rect area)
             where T : Object
         {
             Event evt = Event.current;
             var list = new List<T>();
 
-            if (evt.type == EventType.DragUpdated && 
+            if (evt.type == EventType.DragUpdated &&
                 area.Contains(evt.mousePosition))
             {
                 DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
             }
-            else if (evt.type == EventType.DragPerform && 
+            else if (evt.type == EventType.DragPerform &&
                      area.Contains(evt.mousePosition))
             {
                 DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
