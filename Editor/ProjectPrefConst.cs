@@ -1,6 +1,6 @@
 ﻿namespace Puetsua.VRCButtonWizard.Editor
 {
-    internal static class EditorPrefConst
+    internal static class ProjectPrefConst
     {
         internal const string
             SavePath = "Puetsua.VRCButtonWizard.SavePath",
