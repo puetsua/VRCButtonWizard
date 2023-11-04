@@ -1,0 +1,16 @@
+{
+  "name": "vrchat.puetsuaworkshop.buttonwizard",
+  "displayName": "VRChat Button Wizard",
+  "version": "0.4.1",
+  "description": "A simple toggle creator.",
+  "gitDependencies": {},
+  "legacyFolders": {
+    "Assets\\PuetsuaWorkshop\\VRCButtonWizard": "7b90b926c73474b45a40da4840c494da"
+  },
+  "vpmDependencies": {
+    "com.vrchat.avatars": ">=3.1.0 <3.5.0"
+  },
+  "legacyFiles": {},
+  "type": "tool",
+  "unity": "2019.4"
+}
