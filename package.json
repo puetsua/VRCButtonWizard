@@ -8,7 +8,7 @@
     "Assets\\PuetsuaWorkshop\\VRCButtonWizard": "7b90b926c73474b45a40da4840c494da"
   },
   "vpmDependencies": {
-    "com.vrchat.avatars": ">=3.1.0 <3.5.0"
+    "com.vrchat.avatars": ">=3.1.0 <4.0.0"
   },
   "legacyFiles": {},
   "type": "tool",
