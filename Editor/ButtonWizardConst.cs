@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using UnityEngine;
 
 namespace Puetsua.VRCButtonWizard.Editor
 {
@@ -15,12 +16,15 @@ namespace Puetsua.VRCButtonWizard.Editor
                 if (_cachedVersion != "dev")
                     return _cachedVersion;
 
-                // Read json file
-                string json = File.ReadAllText("Packages/vrchat.puetsuaworkshop.buttonwizard/package.json");
-                dynamic jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
-                if (jsonObj != null)
+                try
                 {
+                    string json = File.ReadAllText("Packages/vrchat.puetsuaworkshop.buttonwizard/package.json");
+                    dynamic jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
                     _cachedVersion = jsonObj.version;
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogException(e);
                 }
 
                 return _cachedVersion;
