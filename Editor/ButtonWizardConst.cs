@@ -1,18 +1,30 @@
-﻿namespace Puetsua.VRCButtonWizard.Editor
+﻿using System.IO;
+
+namespace Puetsua.VRCButtonWizard.Editor
 {
     public static class ButtonWizardConst
     {
-        public const int MajorVersion = 0;
-        public const int MinorVersion = 3;
-        public const int PatchVersion = 0;
-        public const string PreRelease = "";
-
         public const int MenuItemPriority = 1123;
 
-        public static readonly string VersionCore = $"{MajorVersion}.{MinorVersion}.{PatchVersion}";
+        private static string _cachedVersion = "dev";
 
-        public static string Version => string.IsNullOrWhiteSpace(PreRelease)
-            ? VersionCore
-            : $"{VersionCore}-{PreRelease}";
+        public static string Version
+        {
+            get
+            {
+                if (_cachedVersion != "dev")
+                    return _cachedVersion;
+
+                // Read json file
+                string json = File.ReadAllText("Packages/vrchat.puetsuaworkshop.buttonwizard/package.json");
+                dynamic jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
+                if (jsonObj != null)
+                {
+                    _cachedVersion = jsonObj.version;
+                }
+
+                return _cachedVersion;
+            }
+        }
     }
 }
