@@ -114,12 +114,18 @@ namespace Puetsua.VRCButtonWizard.Editor
                           areTargetObjectValid;
             if (GUILayout.Button(Localized.baseWindowButtonCreateToggle))
             {
+                RegulateValues();
                 CreateVrcToggle(menuName, parameterName, isParamSaved, defaultBool);
                 CreateToggle(menuName, parameterName);
                 AssetDatabase.SaveAssets();
             }
 
             GUI.enabled = true;
+        }
+
+        private void RegulateValues()
+        {
+            parameterName = menuName;
         }
     }
 }

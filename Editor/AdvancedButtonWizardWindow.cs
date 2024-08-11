@@ -47,29 +47,17 @@ namespace Puetsua.VRCButtonWizard.Editor
             GUILayout.EndVertical();
 
             ShowAvatarField();
-            if (avatar == null)
-            {
-                EditorGUILayout.HelpBox(Localized.baseWindowMsgNoAvatar, MessageType.Info);
-            }
-            else
-            {
-                GUILayout.BeginVertical(ButtonWizardStyles.MultipleFields);
-                ShowVrcTargetMenuField();
-                vrcTargetMenu = EditorGUILayout.ObjectField(" ", vrcTargetMenu,
-                    typeof(VRCExpressionsMenu), false) as VRCExpressionsMenu;
-                GUILayout.EndVertical();
-                ShowMenuNameField();
-                ShowVrcParameterField();
-                ShowParameterNameField();
-                ShowParameterSaveField();
-                ShowParameterDefaultField();
-                ShowInverseToggleField();
-
-                ShowAnimatorField();
-                ShowTargetObjectsField();
-
-                ShowCreateToggleButton();
-            }
+            ShowAnimatorField();
+            ShowVrcTargetMenuField();
+            ShowMenuNameField();
+            ShowVrcParameterField();
+            ShowParameterNameField();
+            ShowParameterSaveField();
+            ShowParameterDefaultField();
+            ShowInverseToggleField();
+            ShowAnimatorControllerField();
+            ShowTargetObjectsField();
+            ShowCreateToggleButton();
 
             GUILayout.EndVertical();
 
@@ -105,41 +93,66 @@ namespace Puetsua.VRCButtonWizard.Editor
         private void ShowCreateToggleButton()
         {
             bool areTargetObjectValid = targetProperties.Count > 0;
+            bool hasVrcTargetMenu = vrcTargetMenu != null;
+            bool hasTargetAnimator = targetAnimator != null;
 
-            GUI.enabled = !string.IsNullOrWhiteSpace(menuName) &&
-                          !string.IsNullOrWhiteSpace(parameterName);
+            GuiEnableIf(
+                !string.IsNullOrWhiteSpace(menuName) &&
+                !string.IsNullOrWhiteSpace(parameterName) &&
+                hasVrcTargetMenu, () =>
+                {
+                    if (GUILayout.Button(Localized.advancedButtonWizardWindowButtonCreateVrcToggle))
+                    {
+                        CreateVrcToggle(menuName, parameterName, isParamSaved, defaultBool);
+                        AssetDatabase.SaveAssets();
+                    }
+                });
 
-            if (GUILayout.Button(Localized.advancedButtonWizardWindowButtonCreateVrcToggle))
+            GuiEnableIf(!string.IsNullOrWhiteSpace(menuName) &&
+                        !string.IsNullOrWhiteSpace(parameterName), () =>
             {
-                CreateVrcToggle(menuName, parameterName, isParamSaved, defaultBool);
-                AssetDatabase.SaveAssets();
-            }
+                if (GUILayout.Button(Localized.advancedButtonWizardWindowButtonCreateAnimatorControllerLayer))
+                {
+                    CreateToggleAnimatorLayerOnly(menuName, parameterName);
+                    AssetDatabase.SaveAssets();
+                }
+            });
 
-            if (GUILayout.Button(Localized.advancedButtonWizardWindowButtonCreateAnimatorControllerLayer))
+            GuiEnableIf(!string.IsNullOrWhiteSpace(menuName) &&
+                        !string.IsNullOrWhiteSpace(parameterName) &&
+                        hasTargetAnimator &&
+                        areTargetObjectValid, () =>
             {
-                CreateToggleAnimatorLayerOnly(menuName, parameterName);
-                AssetDatabase.SaveAssets();
-            }
+                if (GUILayout.Button(Localized.advancedButtonWizardWindowButtonCreateAnimationClips))
+                {
+                    CreateToggleClipsOnly(menuName, parameterName);
+                    AssetDatabase.SaveAssets();
+                }
+            });
+
+            GuiEnableIf(!string.IsNullOrWhiteSpace(menuName) &&
+                        !string.IsNullOrWhiteSpace(parameterName) &&
+                        hasVrcTargetMenu &&
+                        hasTargetAnimator &&
+                        areTargetObjectValid, () =>
+            {
+                if (GUILayout.Button(Localized.baseWindowButtonCreateToggle))
+                {
+                    CreateVrcToggle(menuName, parameterName, isParamSaved, defaultBool);
+                    CreateToggle(menuName, parameterName);
+                    AssetDatabase.SaveAssets();
+                }
+            });
 
             GUI.enabled = true;
-            GUI.enabled = !string.IsNullOrWhiteSpace(menuName) &&
-                          !string.IsNullOrWhiteSpace(parameterName) &&
-                          areTargetObjectValid;
+        }
 
-            if (GUILayout.Button(Localized.advancedButtonWizardWindowButtonCreateAnimationClips))
-            {
-                CreateToggleClipsOnly(menuName, parameterName);
-                AssetDatabase.SaveAssets();
-            }
-
-            if (GUILayout.Button(Localized.baseWindowButtonCreateToggle))
-            {
-                CreateVrcToggle(menuName, parameterName, isParamSaved, defaultBool);
-                CreateToggle(menuName, parameterName);
-                AssetDatabase.SaveAssets();
-            }
-
-            GUI.enabled = true;
+        private void GuiEnableIf(bool condition, System.Action guiAction)
+        {
+            bool guiEnabled = GUI.enabled;
+            GUI.enabled = condition;
+            guiAction();
+            GUI.enabled = guiEnabled;
         }
     }
 }

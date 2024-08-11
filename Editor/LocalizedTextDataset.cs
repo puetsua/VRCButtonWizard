@@ -24,6 +24,7 @@ namespace Puetsua.VRCButtonWizard.Editor
         public string
             // Base
             baseWindowLabelAvatar,
+            baseWindowLabelAnimatorController,
             baseWindowLabelAnimator,
             baseWindowLabelVrcTargetMenu,
             baseWindowLabelVrcParameters,
@@ -35,8 +36,10 @@ namespace Puetsua.VRCButtonWizard.Editor
             baseWindowLabelInvertToggle,
             baseWindowButtonCreateToggle,
             baseWindowTipDropObjectsHere,
+            baseWindowTipAnimatorRequired,
             // -- Tooltip
             baseWindowTooltipAvatar,
+            baseWindowTooltipAnimatorController,
             baseWindowTooltipAnimator,
             baseWindowTooltipVrcTargetMenu,
             baseWindowTooltipVrcParameters,

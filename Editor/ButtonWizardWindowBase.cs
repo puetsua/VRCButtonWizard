@@ -19,6 +19,7 @@ namespace Puetsua.VRCButtonWizard.Editor
         protected static LocalizedTextDataset Localized => LocalizedTextDataset.primary;
 
         protected VRCAvatarDescriptor avatar;
+        protected Animator targetAnimator;
         protected AnimatorController targetAnimatorController;
         protected List<ToggleProperty> targetProperties = new List<ToggleProperty>();
         protected VRCExpressionParameters vrcParameters;
@@ -81,6 +82,23 @@ namespace Puetsua.VRCButtonWizard.Editor
             }
         }
 
+        protected void ShowAnimatorField(Action onChange = null)
+        {
+            var label = new GUIContent
+            {
+                text = Localized.baseWindowLabelAnimator,
+                tooltip = Localized.baseWindowTooltipAnimator
+            };
+
+            EditorGUI.BeginChangeCheck();
+            targetAnimator = EditorGUILayout.ObjectField(label, targetAnimator,
+                typeof(Animator), true) as Animator;
+            if (EditorGUI.EndChangeCheck())
+            {
+                onChange?.Invoke();
+            }
+        }
+
         protected void ShowSaveLocation(Action onChange = null)
         {
             var label = new GUIContent
@@ -100,6 +118,11 @@ namespace Puetsua.VRCButtonWizard.Editor
 
         private void SetupNewAvatarSetting(VRCAvatarDescriptor avatarDesc)
         {
+            if (targetAnimator == null)
+            {
+                targetAnimator = avatarDesc.GetComponent<Animator>();
+            }
+
             if (targetAnimatorController == null)
             {
                 targetAnimatorController = GetAnimatorController(avatarDesc);
@@ -115,12 +138,12 @@ namespace Puetsua.VRCButtonWizard.Editor
             return avatar.baseAnimationLayers[4].animatorController as AnimatorController;
         }
 
-        protected void ShowAnimatorField()
+        protected void ShowAnimatorControllerField()
         {
             var label = new GUIContent
             {
-                text = Localized.baseWindowLabelAnimator,
-                tooltip = Localized.baseWindowTooltipAnimator
+                text = Localized.baseWindowLabelAnimatorController,
+                tooltip = Localized.baseWindowTooltipAnimatorController
             };
 
             targetAnimatorController = EditorGUILayout.ObjectField(label, targetAnimatorController,
@@ -135,7 +158,21 @@ namespace Puetsua.VRCButtonWizard.Editor
                 tooltip = Localized.baseWindowTooltipVrcTargetMenu
             };
 
-            vrcTargetMenu = PtEditorGUILayout.VrcMenuPopup(label, VrcRootMenu, vrcTargetMenu);
+            if (VrcRootMenu == null)
+            {
+                vrcTargetMenu = EditorGUILayout.ObjectField(label, vrcTargetMenu,
+                    typeof(VRCExpressionsMenu), false) as VRCExpressionsMenu;
+            }
+            else
+            {
+                GUILayout.BeginVertical(ButtonWizardStyles.MultipleFields);
+
+                vrcTargetMenu = PtEditorGUILayout.VrcMenuPopup(label, VrcRootMenu, vrcTargetMenu);
+                vrcTargetMenu = EditorGUILayout.ObjectField(" ", vrcTargetMenu,
+                    typeof(VRCExpressionsMenu), false) as VRCExpressionsMenu;
+
+                GUILayout.EndVertical();
+            }
         }
 
         protected void ShowVrcParameterField()
@@ -152,8 +189,6 @@ namespace Puetsua.VRCButtonWizard.Editor
 
         protected void ShowTargetObjectsField(Action onChange = null)
         {
-            EditorGUI.BeginChangeCheck();
-
             var label = new GUIContent
             {
                 text = Localized.baseWindowLabelTargetObject,
@@ -163,38 +198,51 @@ namespace Puetsua.VRCButtonWizard.Editor
             EditorGUILayout.BeginVertical(ButtonWizardStyles.MultipleFields, GUILayout.MinHeight(100));
             EditorGUILayout.LabelField(label);
 
-            if (targetProperties.Count == 0)
+            EditorGUI.BeginChangeCheck();
+
+            if (targetAnimator == null)
             {
-                GUILayout.Label(Localized.baseWindowTipDropObjectsHere, ButtonWizardStyles.LabelCenter,
+                GUILayout.Label(Localized.baseWindowTipAnimatorRequired, ButtonWizardStyles.LabelCenter,
                     GUILayout.MinHeight(100));
             }
             else
             {
-                ShowTargetProperties();
-            }
-
-            EditorGUILayout.EndVertical();
-
-            var gobjs = PtEditorGUILayout.CheckDragAndDrop<GameObject>();
-            if (gobjs.Count > 0)
-            {
-                foreach (var gobj in gobjs)
+                int previousPropertyCount = targetProperties.Count;
+                if (targetProperties.Count == 0)
                 {
-                    TryToAddTargetProperty(gobj);
+                    GUILayout.Label(Localized.baseWindowTipDropObjectsHere, ButtonWizardStyles.LabelCenter,
+                        GUILayout.MinHeight(100));
+                }
+                else
+                {
+                    ShowTargetProperties();
+                }
+
+                var gobjs = PtEditorGUILayout.CheckDragAndDrop<GameObject>();
+                if (gobjs.Count > 0)
+                {
+                    foreach (var gobj in gobjs)
+                    {
+                        TryToAddTargetProperty(gobj);
+                    }
+                }
+
+                if (EditorGUI.EndChangeCheck() && targetAnimatorController != null)
+                {
+                    // Automatically fill menu name and parameter name if first object is set
+                    bool isFirstPropertyAdded = previousPropertyCount == 0 && targetProperties.Count > 0;
+                    if (isFirstPropertyAdded)
+                        SetupTargetObjectSetting(targetProperties[0]);
+                    onChange?.Invoke();
                 }
             }
 
-            if (EditorGUI.EndChangeCheck() && targetAnimatorController != null)
-            {
-                if (targetProperties.Count > 0)
-                    SetupTargetObjectSetting(targetProperties[0]);
-                onChange?.Invoke();
-            }
+            EditorGUILayout.EndVertical();
         }
 
         private void TryToAddTargetProperty(GameObject gobj)
         {
-            var property = new ToggleProperty(gobj, avatar.gameObject);
+            var property = new ToggleProperty(gobj, targetAnimator.gameObject);
             targetProperties.Add(property);
             GUI.changed = true;
         }

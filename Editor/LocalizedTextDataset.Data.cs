@@ -6,6 +6,7 @@
         {
             // Base
             baseWindowLabelAvatar = "Avatar",
+            baseWindowLabelAnimatorController = "Animator Controller",
             baseWindowLabelAnimator = "Animator",
             baseWindowLabelVrcTargetMenu = "Target Menu",
             baseWindowLabelVrcParameters = "Parameters",
@@ -17,9 +18,11 @@
             baseWindowLabelInvertToggle = "Invert Toggle",
             baseWindowButtonCreateToggle = "Create Toggle",
             baseWindowTipDropObjectsHere = "[Drop Objects Here]",
+            baseWindowTipAnimatorRequired = "Animator is required to create toggle.",
             // -- Tooltip
             baseWindowTooltipAvatar = "VRChat Avatar with VRCAvatarDescriptor component.",
-            baseWindowTooltipAnimator = "Usually the animator under FX layer.",
+            baseWindowTooltipAnimatorController = "Usually filled with animator controller of FX layer.",
+            baseWindowTooltipAnimator = "Animator component. Usually filled with avatar's animator.",
             baseWindowTooltipVrcTargetMenu = "Target menu to add your toggle.",
             baseWindowTooltipVrcParameters = "VRChat Expression Parameters to control your animator.",
             baseWindowTooltipTargetObject = "Target object to toggle.",
@@ -63,6 +66,7 @@
         {
             // Base
             baseWindowLabelAvatar = "角色",
+            baseWindowLabelAnimatorController = "動畫控制器",
             baseWindowLabelAnimator = "動畫器",
             baseWindowLabelVrcTargetMenu = "目標表情目錄",
             baseWindowLabelVrcParameters = "VRC表情參數表",
@@ -74,9 +78,11 @@
             baseWindowLabelInvertToggle = "開關反向",
             baseWindowButtonCreateToggle = "建立開關",
             baseWindowTipDropObjectsHere = "[拖曳物件至此]",
+            baseWindowTipAnimatorRequired = "建立開關需要動畫器。",
             // -- Tooltip
             baseWindowTooltipAvatar = "帶有VRCAvatarDescriptor元件的角色(Avatar)物件。",
-            baseWindowTooltipAnimator = "Animator，通常是FX動畫層的動畫器。",
+            baseWindowTooltipAnimatorController = "Animator，通常是FX動畫層的動畫控制器。",
+            baseWindowTooltipAnimator = "Animator Controller，針對物件的動畫器，通常會是Avatar本身的動畫器。",
             baseWindowTooltipVrcTargetMenu = "VRC Expression Menu, 開關新增時要放置在哪個表情目錄下。",
             baseWindowTooltipVrcParameters = "VRC Expression Parameter, 驅動動畫器的VRChat的VRC表情參數表。",
             baseWindowTooltipTargetObject = "要設定開關的目標物件。",
