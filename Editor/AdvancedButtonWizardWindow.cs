@@ -102,35 +102,6 @@ namespace Puetsua.VRCButtonWizard.Editor
                 ButtonWizardPref.AlwaysAdvanced);
         }
 
-        private void ShowTargetObjectsField2()
-        {
-            if (targetProperties.Count >= 1 && GUILayout.Button("test"))
-            {
-                var list = AnimationUtility.GetAnimatableBindings(targetProperties[0].gameObject, avatar.gameObject);
-                Debug.Log(string.Join("\n", list.Select(
-                    b =>
-                    {
-                        string typeName = null;
-                        var animObj = AnimationUtility.GetAnimatedObject(avatar.gameObject, b);
-                        if (animObj != null)
-                        {
-                            var serializedObject = new SerializedObject(animObj);
-                            var property = serializedObject.FindProperty(b.propertyName);
-                            typeName = property?.type;
-                        }
-
-                        if (string.IsNullOrWhiteSpace(typeName))
-                        {
-                            return "";
-                        }
-
-                        return $"{b.propertyName} // " +
-                               $"{b.path} // " +
-                               $"{typeName}";
-                    })));
-            }
-        }
-
         private void ShowCreateToggleButton()
         {
             bool areTargetObjectValid = targetProperties.Count > 0;
