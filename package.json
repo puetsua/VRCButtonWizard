@@ -1,7 +1,7 @@
 {
   "name": "vrchat.puetsuaworkshop.buttonwizard",
   "displayName": "VRChat Button Wizard",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "A simple toggle creator.",
   "gitDependencies": {},
   "legacyFolders": {
