@@ -128,6 +128,12 @@ namespace Puetsua.VRCButtonWizard.Editor
                     CreateToggleClipsOnly(menuName, parameterName);
                     AssetDatabase.SaveAssets();
                 }
+                
+                if (GUILayout.Button(Localized.advancedButtonWizardWindowButtonCreateLayersAndClips))
+                {
+                    CreateToggle(menuName, parameterName);
+                    AssetDatabase.SaveAssets();
+                }
             });
 
             GuiEnableIf(!string.IsNullOrWhiteSpace(menuName) &&

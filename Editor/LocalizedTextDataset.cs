@@ -70,6 +70,7 @@ namespace Puetsua.VRCButtonWizard.Editor
             advancedButtonWizardWindowButtonCreateVrcToggle,
             advancedButtonWizardWindowButtonCreateAnimationClips,
             advancedButtonWizardWindowButtonCreateAnimatorControllerLayer,
+            advancedButtonWizardWindowButtonCreateLayersAndClips,
 
             // Setting
             settingWindowLabelTitle,

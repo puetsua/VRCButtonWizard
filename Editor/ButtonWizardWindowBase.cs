@@ -95,6 +95,10 @@ namespace Puetsua.VRCButtonWizard.Editor
                 typeof(Animator), true) as Animator;
             if (EditorGUI.EndChangeCheck())
             {
+                if (targetAnimator != null && targetAnimatorController == null)
+                {
+                    targetAnimatorController = targetAnimator.runtimeAnimatorController as AnimatorController;
+                }
                 onChange?.Invoke();
             }
         }
@@ -356,6 +360,8 @@ namespace Puetsua.VRCButtonWizard.Editor
 
             AnimationClipUtil.ToggleCreate(folderPath, properties, toggleParameterName, true);
             AnimationClipUtil.ToggleCreate(folderPath, properties, toggleParameterName, false);
+            
+            Debug.Log("Toggle clips created successfully.");
         }
 
         protected void CreateToggleAnimatorLayerOnly(string toggleMenuName, string toggleParameterName)
@@ -381,6 +387,8 @@ namespace Puetsua.VRCButtonWizard.Editor
             targetAnimatorController.TryAddParameter(CreateToggleParameters(toggleParameterName));
 
             EditorUtility.SetDirty(targetAnimatorController);
+            
+            Debug.Log("Toggle Animator Layer created successfully.");
         }
 
         protected void CreateToggle(string toggleMenuName, string toggleParameterName)
@@ -410,6 +418,8 @@ namespace Puetsua.VRCButtonWizard.Editor
             targetAnimatorController.TryAddParameter(CreateToggleParameters(toggleParameterName));
 
             EditorUtility.SetDirty(targetAnimatorController);
+            
+            Debug.Log("Toggle animator layer and clips created successfully.");
         }
 
         private AnimatorControllerLayer CreateToggleLayer(AnimatorStateMachine stateMachine, string toggleMenuName)
@@ -455,6 +465,8 @@ namespace Puetsua.VRCButtonWizard.Editor
                 vrcTargetMenu.AddToggle(toggleMenuName, toggleParameterName);
                 EditorUtility.SetDirty(vrcTargetMenu);
             }
+            
+            Debug.Log("VRC Toggle created successfully.");
         }
 
         protected static void CreateFolderIfNotExist(string path)
