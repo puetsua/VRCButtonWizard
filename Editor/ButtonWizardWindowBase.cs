@@ -99,6 +99,7 @@ namespace Puetsua.VRCButtonWizard.Editor
                 {
                     targetAnimatorController = targetAnimator.runtimeAnimatorController as AnimatorController;
                 }
+
                 onChange?.Invoke();
             }
         }
@@ -199,18 +200,21 @@ namespace Puetsua.VRCButtonWizard.Editor
                 tooltip = Localized.baseWindowTooltipTargetObject
             };
 
-            EditorGUILayout.BeginVertical(ButtonWizardStyles.MultipleFields, GUILayout.MinHeight(100));
-            EditorGUILayout.LabelField(label);
-
-            EditorGUI.BeginChangeCheck();
-
             if (targetAnimator == null)
             {
+                EditorGUILayout.BeginVertical(ButtonWizardStyles.MultipleFields, GUILayout.MinHeight(100));
+                EditorGUILayout.LabelField(label);
                 GUILayout.Label(Localized.baseWindowTipAnimatorRequired, ButtonWizardStyles.LabelCenter,
                     GUILayout.MinHeight(100));
+                EditorGUILayout.EndVertical();
             }
             else
             {
+                EditorGUILayout.BeginVertical(ButtonWizardStyles.MultipleFields, GUILayout.MinHeight(100));
+                EditorGUILayout.LabelField(label);
+
+                EditorGUI.BeginChangeCheck();
+
                 int previousPropertyCount = targetProperties.Count;
                 if (targetProperties.Count == 0)
                 {
@@ -221,6 +225,8 @@ namespace Puetsua.VRCButtonWizard.Editor
                 {
                     ShowTargetProperties();
                 }
+
+                EditorGUILayout.EndVertical();
 
                 var gobjs = PtEditorGUILayout.CheckDragAndDrop<GameObject>();
                 if (gobjs.Count > 0)
@@ -240,8 +246,6 @@ namespace Puetsua.VRCButtonWizard.Editor
                     onChange?.Invoke();
                 }
             }
-
-            EditorGUILayout.EndVertical();
         }
 
         private void TryToAddTargetProperty(GameObject gobj)
@@ -360,7 +364,7 @@ namespace Puetsua.VRCButtonWizard.Editor
 
             AnimationClipUtil.ToggleCreate(folderPath, properties, toggleParameterName, true);
             AnimationClipUtil.ToggleCreate(folderPath, properties, toggleParameterName, false);
-            
+
             Debug.Log("Toggle clips created successfully.");
         }
 
@@ -387,7 +391,7 @@ namespace Puetsua.VRCButtonWizard.Editor
             targetAnimatorController.TryAddParameter(CreateToggleParameters(toggleParameterName));
 
             EditorUtility.SetDirty(targetAnimatorController);
-            
+
             Debug.Log("Toggle Animator Layer created successfully.");
         }
 
@@ -418,7 +422,7 @@ namespace Puetsua.VRCButtonWizard.Editor
             targetAnimatorController.TryAddParameter(CreateToggleParameters(toggleParameterName));
 
             EditorUtility.SetDirty(targetAnimatorController);
-            
+
             Debug.Log("Toggle animator layer and clips created successfully.");
         }
 
@@ -465,7 +469,7 @@ namespace Puetsua.VRCButtonWizard.Editor
                 vrcTargetMenu.AddToggle(toggleMenuName, toggleParameterName);
                 EditorUtility.SetDirty(vrcTargetMenu);
             }
-            
+
             Debug.Log("VRC Toggle created successfully.");
         }
 
