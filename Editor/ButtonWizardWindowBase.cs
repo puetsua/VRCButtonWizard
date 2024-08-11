@@ -288,12 +288,12 @@ namespace Puetsua.VRCButtonWizard.Editor
 
             if (string.IsNullOrWhiteSpace(menuName))
             {
-                menuName = target.binding.path;
+                menuName = target.gameObject.name;
             }
 
             if (string.IsNullOrWhiteSpace(parameterName))
             {
-                parameterName = target.binding.path;
+                parameterName = target.gameObject.name;
             }
         }
 
