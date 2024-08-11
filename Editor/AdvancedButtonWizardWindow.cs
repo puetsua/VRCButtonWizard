@@ -22,7 +22,7 @@ namespace Puetsua.VRCButtonWizard.Editor
             menu.AddItem(new GUIContent(Localized.baseWindowMenuToggleAlwaysAdvanced),
                 ButtonWizardPref.AlwaysAdvanced, ToggleAlwaysAdvanced);
             menu.AddItem(new GUIContent(Localized.advancedButtonWizardWindowMenuSimple),
-                false, ButtonWizardWindow.OpenWindow);
+                false, OpenSimpleWindow);
         }
 
         private void CreateGUI()
@@ -83,6 +83,12 @@ namespace Puetsua.VRCButtonWizard.Editor
             GUILayout.FlexibleSpace();
 
             ShowFooter();
+        }
+
+        private void OpenSimpleWindow()
+        {
+            ButtonWizardWindow.OpenWindow();
+            Close();
         }
 
         private void OnSaveLocationChanged()

@@ -32,7 +32,7 @@ namespace Puetsua.VRCButtonWizard.Editor
             menu.AddItem(new GUIContent(Localized.baseWindowMenuToggleAlwaysAdvanced),
                 ButtonWizardPref.AlwaysAdvanced, ToggleAlwaysAdvanced);
             menu.AddItem(new GUIContent(Localized.buttonWizardWindowMenuAdvanced),
-                false, AdvancedButtonWizardWindow.OpenWindow);
+                false, OpenAdvancedWindow);
         }
 
         private void CreateGUI()
@@ -64,9 +64,24 @@ namespace Puetsua.VRCButtonWizard.Editor
             GUILayout.EndVertical();
 
             GUILayout.FlexibleSpace();
+            ShowOpenAdvancedWindowButton();
             ShowFooter();
         }
 
+        private void ShowOpenAdvancedWindowButton()
+        {
+            if (GUILayout.Button(Localized.buttonWizardWindowMenuAdvanced))
+            {
+                OpenAdvancedWindow();
+            }
+        }
+        
+        private void OpenAdvancedWindow()
+        {
+            AdvancedButtonWizardWindow.OpenWindow();
+            Close();
+        }
+        
         private void OnAvatarChanged()
         {
             SetFolderPath();
