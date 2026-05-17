@@ -6,4 +6,3 @@
 You can find the tool under Tools menu bar.
 
 ![where_to_find_the_tool.png](Documentation~/where_to_find_the_tool.png)
-
