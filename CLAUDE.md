@@ -15,7 +15,9 @@ Entry point in the editor: **Tools → VRChat Button Wizard** (`ButtonWizardWind
 
 ## Release
 
-Releases are produced by `.github/workflows/release.yaml` (manual `workflow_dispatch` only). It reads `version` from `package.json`, zips the repo, builds a `.unitypackage` from `.meta` files, and creates a GitHub release tagged with the version. **Bumping the version in `package.json` is the trigger** — there is no separate changelog or tag step.
+Releases are produced by `.github/workflows/release.yaml` (manual `workflow_dispatch` only). It reads `version` from `package.json`, zips the repo, builds a `.unitypackage` from `.meta` files, creates a GitHub release tagged with the version, and finally fires a `repository_dispatch` of type `add-package-release` to `puetsua/vrc-stuff` so the VPM listing site picks up the new release automatically. **Bumping the version in `package.json` is the trigger** — there is no separate changelog or tag step.
+
+The dispatch step requires a `VPM_LISTING_TOKEN` secret on the repo: a PAT with `Contents: write` on `puetsua/vrc-stuff` (fine-grained PAT scoped to that one repo is sufficient). Without it the release still publishes but the listing won't auto-update.
 
 `ButtonWizardConst.Version` reads `Packages/vrchat.puetsuaworkshop.buttonwizard/package.json` at runtime via a **hardcoded path**. Renaming the package folder will break the in-tool version display (it falls back to `"dev"`).
 

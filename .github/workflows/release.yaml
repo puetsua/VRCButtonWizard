@@ -58,3 +58,19 @@ jobs:
           files: |
             ${{ env.zipFile }}
             ${{ env.unityPackage }}
+
+      - name: Notify VPM listing (puetsua/vrc-stuff)
+        env:
+          GH_TOKEN: ${{ secrets.VPM_LISTING_TOKEN }}
+          PACKAGE_NAME: vrchat.puetsuaworkshop.buttonwizard
+          RELEASE_URL: https://github.com/${{ github.repository }}/releases/download/${{ steps.version.outputs.prop }}/${{ env.zipFile }}
+        run: |
+          jq -n \
+            --arg name "$PACKAGE_NAME" \
+            --arg url "$RELEASE_URL" \
+            '{event_type:"add-package-release",client_payload:{packageName:$name,releaseUrl:$url}}' \
+            | gh api --method POST \
+                -H "Accept: application/vnd.github+json" \
+                -H "X-GitHub-Api-Version: 2022-11-28" \
+                /repos/puetsua/vrc-stuff/dispatches \
+                --input -
